@@ -1,61 +1,52 @@
 const Category = require('./category');
+const Sequelize = require('sequelize');
+const sequelize = require('../utils/database');
+
+// constructor(categoryId, question, correctAnswer, options, tags, hardness, status) {
+
+//     this.categoryId = categoryId;
+//     this.question = question;
+//     this.correctAnswer = correctAnswer;
+//     this.options = options;
+//     this.tags = tags;
+//     this.hardness = hardness;
+//     this.status = status;
 
 
-module.exports = class Question {
-    constructor(categoryId, question, correctAnswer, options, hardness, status) {
+//     var dateTime = new Date();
+//     var date = dateTime.getFullYear() + '-' + (dateTime.getMonth() + 1) + '-' + dateTime.getDate();
+//     var time = dateTime.getHours() + ":" + dateTime.getMinutes() + ":" + dateTime.getSeconds();
+//     var record = date + ' ' + time;
+//     this.dateOfAdding = record;
 
-        this.categoryId = categoryId;
-        this.question = question;
-        this.correctAnswer = correctAnswer;
-        this.options = options;
-        this.hardness = hardness;
-        this.status = status;
-
-
-        var dateTime = new Date();
-        var date = dateTime.getFullYear() + '-' + (dateTime.getMonth() + 1) + '-' + dateTime.getDate();
-        var time = dateTime.getHours() + ":" + dateTime.getMinutes() + ":" + dateTime.getSeconds();
-        var record = date + ' ' + time;
-        this.dateOfAdding = record;
-
-        this.correctGuesses = 0;
-        this.incorrectGuesses = 0;
-
-
-
-    }
-
-    save() {
-
-        var sql3 = `INSERT INTO "${this.categoryId}" (question,correctAnswer,options,hardness,status,correctGuesses,incorrectGuesses,dateOfAdding) VALUES (?,?,?,?,?,?,?,?)`;
-        db.execute(sql3, [question.question, question.correctAnswer, question.options, question.hardness, question.status, 0, 0, question.dateOfAdding], (err3, result3, fields3) => {
-
-            if (err3) {
-                console.log("Error in adding to the category table " + `${this.categoryId}`);
-                return;
-            }
+//     this.correctGuesses = 0;
+//     this.incorrectGuesses = 0;
 
 
 
-        });
+// }
+const Question = sequelize.define('question', {
 
-    }
-    save(category) {
+    id: {
+        type: Sequelize.INTEGER,
+        autoIncrement: true,
+        allowNull: false,
+        primaryKey: true
+    },
+    categoryId: Sequelize.INTEGER,
+    question: Sequelize.STRING,
+    correctAnswer: Sequelize.STRING,
+    options: Sequelize.STRING,
+    tags: Sequelize.STRING,
+    hardness: Sequelize.INTEGER,
+    status: Sequelize.INTEGER,
+    correctGuesses: Sequelize.INTEGER,
+    incorrectGuesses: Sequelize.INTEGER,
+    dateOfAdding: Sequelize.STRING
 
-        category.saveNewCategory(this);
+});
 
-    }
-
-    static fetchAll(categoryId) {
-
-    }
-    static findById(categoryId, questionId) {
-
-    }
-
-
-}
-
+module.exports = Question;
 
 
 

@@ -2,7 +2,7 @@ const express = require('express');
 const path = require('path');
 const bodyParser = require('body-parser');
 
-const db = require('./utils/database');
+const sequelize = require('./utils/database');
 
 const app = express();
 
@@ -24,4 +24,12 @@ app.use('/', (req, res, next) => {
     res.status(404).send();
 
 });
+
+sequelize.sync().then(result => {
+    console.log(result);
+})
+    .catch(err => {
+        console.log("Error in sequelize syncing " + err);
+    });
+
 module.exports = app;

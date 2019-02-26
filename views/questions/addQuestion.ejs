@@ -7,16 +7,18 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Add questions</title>
     <link rel="stylesheet" href="/css/addQuestion.css">
+    <script src="/js/addQuestion.js"></script>
 </head>
 
 <body>
 
     <div id="main">
 
-        <form id="questionForm" method="GET">
+        <form id="questionForm" method="POST">
             <label>About Category</label><br>
-            <select name="category" id="category">
+            <select name="category" id="category" onchange="categorySelectionChange()">
                 <option value="-1">Choose a category</option>
+                <option value="-2">Add a new category</option>
                 <% if(categories.length >0){
                 
                 for(let category of categories){
@@ -24,18 +26,36 @@
                     var categoryTitle = category.title;
                    
                 %>
-                <option value=`${id}`>
+                <option value=<%=
+                `${id}`
+                %>>
                     <%=
                 `${categoryTitle}`
                 %>
                 </option>
                 <%}}%>
-            </select> <br><br>
+            </select> <br>
+            <div id="newCategoryDiv">
+                <input type="text" name="newCategory" id="newCategory" placeholder="New category title"><br>
+                <label>About Category Status</label><br>
+                <select name="categoryStatus" id="categoryStatus">
+                    <option value="0">Submitted</option>
+                    <option value="1">In Review</option>
+                    <option value="2">Approved</option>
+                </select><br>
+            </div>
+            <br>
             <label>About question</label><br>
-            <input type=" text" name="question" placeholder="Question"><br>
-            <input type="text" name="answer" placeholder="Correct Answer"><br>
+            <input type="text" name="question" placeholder="Question"><br>
+            <input type="text" name="correctAnswer" placeholder="Correct Answer"><br>
             <input type="text" name="otherOptions" placeholder="Other options separated by _"><br>
             <input type="text" name="tags" placeholder="tags separated by _"><br><br>
+            <label>About Hardness</label><br>
+            <select name="hardness" id="hardness">
+                <option value="0">Beginner</option>
+                <option value="1">Intermediate</option>
+                <option value="2">Advanced</option>
+            </select><br><br>
             <label>About Status</label><br>
             <select name="status" id="status">
                 <option value="0">Submitted</option>

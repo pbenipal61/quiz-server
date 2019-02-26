@@ -26,7 +26,8 @@ app.use('/', (req, res, next) => {
 });
 
 sequelize.sync().then(result => {
-    console.log(result);
+    // console.log(result);
+    console.log("Sequelize models synced");
 })
     .catch(err => {
         console.log("Error in sequelize syncing " + err);

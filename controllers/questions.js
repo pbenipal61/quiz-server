@@ -1,6 +1,9 @@
-const Question = require('../models/question');
-const Category = require('../models/category');
-
+const Question = require('../models/models').Question;
+const Category = require('../models/models').Category;
+const { graphql } = require('graphql');
+const schema = require('../graphql/schema');
+const fetch = require('node-fetch');
+const axios = require('axios');
 
 exports.addQuestion = (req, res, next) => {
     console.log("Rendering page");
@@ -39,7 +42,7 @@ exports.postAddQuestion = (req, res, next) => {
     var time = dateTime.getHours() + ":" + dateTime.getMinutes() + ":" + dateTime.getSeconds();
     var record = date + ' ' + time;
 
-    console.log(categoryId, question, correctAnswer);
+    console.log(categoryId, question, correctAnswer, options, tags, hardness, status, record);
 
     if (question != null && correctAnswer != null && options != null) {
         if (categoryId != -1 && categoryId != -2) {
@@ -70,7 +73,70 @@ exports.postAddQuestion = (req, res, next) => {
                         status: 400
                     });
                 });
+
+
+
+            var graphqlQuery = {
+                query: `mutation {
+                    addQuestion(
+                            question: "${question}",
+                            categoryId: "${categoryId}",
+                            correctAnswer: "${correctAnswer}",
+                            options: "${options}",
+                            tags: "${tags}",
+                            status: "${status}",
+                            hardness: "${hardness}",
+                            correctGuesses: "0",
+                            incorrectGuesses: "0",
+                            dateOfAdding: "${record}" 
+                        
+                        ){
+                            id
+                        }
+                  }`
+            };
+            var testQuery = {
+                query: `{
+                    categories{
+                      "${categoryId}"
+                    }
+                  }`
+
+            };
+            // fetch('http://localhost:3000/graphql', {
+            //     method: 'POST',
+            //     url: 'http://localhost:3000/graphql',
+            //     headers: {
+            //         'Content-Type': 'application/json',
+            //         'Accept': 'application/json',
+
+            //     },
+            //     data: JSON.stringify(graphql)
+
+            // }).then(result => {
+            //     console.log(result);
+            //     if (result.status == 200 || result.status == 201) {
+            //         console.log("New question added");
+            //         console.log(result.json());
+            //         next();
+            //     }
+
+            // }).then(data => {
+            //     console.log("data returned: ", data);
+            //     res.send({ message: "New question added " });
+
+            // })
+            //     .catch(err => {
+
+            //         console.log("Error in adding question "
+            //             + err);
+            //         res.status(400).send({ message: "Error in adding the question", error: err.message });
+            //     });
+
+
         } else {
+
+
             if (categoryId == -1) {
 
                 console.log("Failed to realise a category for the question");
@@ -138,3 +204,7 @@ exports.postAddQuestion = (req, res, next) => {
 
 
 };
+
+function queryGraphQL(str) {
+    return graphql(schema, str);
+}

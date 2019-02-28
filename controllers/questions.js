@@ -118,7 +118,7 @@ exports.postAddQuestion = (req, res, next) => {
                   }`
 
             };
-            // fetch('http://localhost:3000/graphql', {
+            // fetch('http://159.89.13.37:3000/graphql', {
             //     method: 'POST',
             //     url: 'http://localhost:3000/graphql',
             //     headers: {

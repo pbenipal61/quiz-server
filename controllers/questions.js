@@ -6,7 +6,7 @@ const fetch = require('node-fetch');
 const axios = require('axios');
 
 exports.addQuestion = (req, res, next) => {
-    console.log("Rendering page");
+
 
     Category.findAll()
         .then(categories => {
@@ -23,7 +23,22 @@ exports.addQuestion = (req, res, next) => {
 
 
 };
+exports.questions = (req, res, next) => {
 
+
+    Question.findAll()
+        .then(questions => {
+            res.render('questions/questions', {
+
+                questions: questions,
+                path: '/'
+
+
+            });
+        })
+        .catch(err => { console.log("Error in fetching all questions list. " + err) });
+
+}
 exports.postAddQuestion = (req, res, next) => {
 
     console.log("Adding a new question");

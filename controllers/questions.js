@@ -110,12 +110,20 @@ exports.postAddQuestion = (req, res, next) => {
                             question: "${question}",
                             categoryId: "${categoryId}",
                             correctAnswer: "${correctAnswer}",
-                            options: "${options}",
+                            option1: "${option1}",
+                            option2: "${option2}",
+                            option3: "${option3}",
+                            option4: "${option4}",
+                            option5: "${option5}",
                             tags: "${tags}",
                             status: "${status}",
                             hardness: "${hardness}",
                             correctGuesses: "0",
-                            incorrectGuesses: "0",
+                            option1Guesses: "0",
+                            option2Guesses: "0",
+                            option3Guesses: "0",
+                            option4Guesses: "0",
+                            option5Guesses: "0",
                             dateOfAdding: "${record}" 
                         
                         ){

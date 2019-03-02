@@ -47,7 +47,11 @@ exports.postAddQuestion = (req, res, next) => {
     var categoryStatus = req.body.categoryStatus;
     var question = req.body.question;
     var correctAnswer = req.body.correctAnswer;
-    var options = req.body.otherOptions;
+    var option1 = req.body.option1;
+    var option2 = req.body.option2;
+    var option3 = req.body.option3;
+    var option4 = req.body.option4;
+    var option5 = req.body.option5;
     var tags = req.body.tags;
     var hardness = req.body.hardness;
     var status = req.body.status;
@@ -57,15 +61,24 @@ exports.postAddQuestion = (req, res, next) => {
     var time = dateTime.getHours() + ":" + dateTime.getMinutes() + ":" + dateTime.getSeconds();
     var record = date + ' ' + time;
 
-    console.log(categoryId, question, correctAnswer, options, tags, hardness, status, record);
+    console.log(categoryId, question, correctAnswer, tags, hardness, status, record);
 
-    if (question != null && correctAnswer != null && options != null) {
+    if (question != null && correctAnswer != null && option1 != null && option2 != null && option3 != null) {
         if (categoryId != -1 && categoryId != -2) {
             Question.create({
                 question: question,
                 categoryId: categoryId,
                 correctAnswer: correctAnswer,
-                options: options,
+                option1: option1,
+                option2: option2,
+                option3: option3,
+                option4: option4,
+                option5: option5,
+                option1Guesses: 0,
+                option2Guesses: 0,
+                option3Guesses: 0,
+                option4Guesses: 0,
+                option5Guesses: 0,
                 tags: tags,
                 status: status,
                 hardness: hardness,
@@ -175,7 +188,16 @@ exports.postAddQuestion = (req, res, next) => {
                             question: question,
                             categoryId: categoryId,
                             correctAnswer: correctAnswer,
-                            options: options,
+                            option1: option1,
+                            option2: option2,
+                            option3: option3,
+                            option4: option4,
+                            option5: option5,
+                            option1Guesses: 0,
+                            option2Guesses: 0,
+                            option3Guesses: 0,
+                            option4Guesses: 0,
+                            option5Guesses: 0,
                             tags: tags,
                             status: status,
                             hardness: hardness,

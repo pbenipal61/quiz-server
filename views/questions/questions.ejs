@@ -17,7 +17,11 @@
 
             <th>Question</th>
             <th>Correct Answer</th>
-            <th>Options</th>
+            <th>Option1</th>
+            <th>Option2</th>
+            <th>Option3</th>
+            <th>Option4</th>
+            <th>Option5</th>
             <th>Category</th>
             <th>Hardness</th>
         </tr>
@@ -26,9 +30,13 @@
                 
             for(let question of questions){
                 var q  = question.question;
-                var category = question.question.categoryId;
+                var category = question.categoryId;
                 var correctAnswer = question.correctAnswer;
-                var options = question.options;
+                var option1 = question.option1;
+                var option2 = question.option2;
+                var option3 = question.option3;
+                var option4 = question.option4;
+                var option5 = question.option5;
                 var hardness = question.hardness;
                
             %>
@@ -45,7 +53,27 @@
             </td>
             <td>
                 <%=
-            `${options}`
+            `${option1}`
+            %>
+            </td>
+            <td>
+                <%=
+            `${option2}`
+            %>
+            </td>
+            <td>
+                <%=
+            `${option3}`
+            %>
+            </td>
+            <td>
+                <%=
+            `${option4}`
+            %>
+            </td>
+            <td>
+                <%=
+            `${option5}`
             %>
             </td>
             <td>

@@ -28,13 +28,46 @@ const Question = sequelize.define('question', {
     categoryId: Sequelize.INTEGER,
     question: Sequelize.STRING,
     correctAnswer: Sequelize.STRING,
-    options: Sequelize.STRING,
+    option1: Sequelize.STRING,
+    option2: Sequelize.STRING,
+    option3: Sequelize.STRING,
+    option4: Sequelize.STRING,
+    option5: Sequelize.STRING,
     tags: Sequelize.STRING,
     hardness: Sequelize.INTEGER,
     status: Sequelize.INTEGER,
     correctGuesses: Sequelize.INTEGER,
-    incorrectGuesses: Sequelize.INTEGER,
+    option1Guesses: Sequelize.INTEGER,
+    option2Guesses: Sequelize.INTEGER,
+    option3Guesses: Sequelize.INTEGER,
+    option4Guesses: Sequelize.INTEGER,
+    option5Guesses: Sequelize.INTEGER,
     dateOfAdding: Sequelize.STRING
+
+});
+
+const User = sequelize.define('user', {
+
+    id: {
+        type: Sequelize.INTEGER,
+        autoIncrement: true,
+        allowNull: false,
+        primaryKey: true
+    },
+    sm: Sequelize.STRING,
+    smId: Sequelize.STRING,
+    name: Sequelize.STRING,
+    birthDate: Sequelize.STRING,
+    email: Sequelize.STRING,
+    profilePhoto: Sequelize.STRING,
+    points: Sequelize.INTEGER,
+    correctGuesses: Sequelize.INTEGER,
+    incorrectGuesses: Sequelize.INTEGER,
+    firstLogin: Sequelize.STRING,
+    lastLogin: Sequelize.STRING,
+    loginCount: Sequelize.INTEGER,
+    device: Sequelize.STRING,
+    country: Sequelize.STRING
 
 });
 
@@ -43,3 +76,4 @@ Question.belongsTo(Category);
 
 module.exports.Category = Category;
 module.exports.Question = Question;
+module.exports.User = User;

@@ -85,10 +85,34 @@ const Question = new GraphQLObjectType({
                     return question.correctAnswer;
                 }
             },
-            options: {
+            option1: {
                 type: GraphQLString,
                 resolve(question) {
-                    return question.options;
+                    return question.option1;
+                }
+            },
+            option2: {
+                type: GraphQLString,
+                resolve(question) {
+                    return question.option1;
+                }
+            },
+            option3: {
+                type: GraphQLString,
+                resolve(question) {
+                    return question.option1;
+                }
+            },
+            option4: {
+                type: GraphQLString,
+                resolve(question) {
+                    return question.option1;
+                }
+            },
+            option5: {
+                type: GraphQLString,
+                resolve(question) {
+                    return question.option1;
                 }
             },
             tags: {
@@ -115,10 +139,34 @@ const Question = new GraphQLObjectType({
                     return question.correctGuesses;
                 }
             },
-            incorrectGuesses: {
+            option1Guesses: {
                 type: GraphQLInt,
                 resolve(question) {
-                    return question.incorrectGuesses;
+                    return question.option1Guesses;
+                }
+            },
+            option2Guesses: {
+                type: GraphQLInt,
+                resolve(question) {
+                    return question.option2Guesses;
+                }
+            },
+            option3Guesses: {
+                type: GraphQLInt,
+                resolve(question) {
+                    return question.option3Guesses;
+                }
+            },
+            option4Guesses: {
+                type: GraphQLInt,
+                resolve(question) {
+                    return question.option4Guesses;
+                }
+            },
+            option5Guesses: {
+                type: GraphQLInt,
+                resolve(question) {
+                    return question.option5Guesses;
                 }
             },
             dateOfAdding: {
@@ -165,12 +213,20 @@ const Query = new GraphQLObjectType({
                     categoryId: { type: GraphQLInt },
                     question: { type: GraphQLString },
                     correctAnswer: { type: GraphQLString },
-                    options: { type: GraphQLString },
+                    option1: { type: GraphQLString },
+                    option2: { type: GraphQLString },
+                    option3: { type: GraphQLString },
+                    option4: { type: GraphQLString },
+                    option5: { type: GraphQLString },
+                    option1Guesses: { type: GraphQLInt },
+                    option2Guesses: { type: GraphQLInt },
+                    option3Guesses: { type: GraphQLInt },
+                    option4Guesses: { type: GraphQLInt },
+                    option5Guesses: { type: GraphQLInt },
                     tags: { type: GraphQLString },
                     hardness: { type: GraphQLInt },
                     status: { type: GraphQLInt },
                     correctGuesses: { type: GraphQLInt },
-                    incorrectGuesses: { type: GraphQLInt },
                     dateOfAdding: { type: GraphQLString },
 
                 },
@@ -204,10 +260,16 @@ const Mutation = new GraphQLObjectType({
                         type: GraphQLString
 
                     },
-                    options: {
-                        type: GraphQLString
-
-                    },
+                    option1: { type: GraphQLString },
+                    option2: { type: GraphQLString },
+                    option3: { type: GraphQLString },
+                    option4: { type: GraphQLString },
+                    option5: { type: GraphQLString },
+                    option1Guesses: { type: GraphQLInt },
+                    option2Guesses: { type: GraphQLInt },
+                    option3Guesses: { type: GraphQLInt },
+                    option4Guesses: { type: GraphQLInt },
+                    option5Guesses: { type: GraphQLInt },
                     tags: {
                         type: GraphQLString
 
@@ -223,9 +285,7 @@ const Mutation = new GraphQLObjectType({
                     correctGuesses: {
                         type: GraphQLInt
                     },
-                    incorrectGuesses: {
-                        type: GraphQLInt
-                    },
+
                     dateOfAdding: {
                         type: GraphQLString
                     }
@@ -237,12 +297,20 @@ const Mutation = new GraphQLObjectType({
                         categoryId: args.categoryId,
                         question: args.question,
                         correctAnswer: args.correctAnswer,
-                        options: args.options,
+                        option1: args.option1,
+                        option2: args.option2,
+                        option3: args.option3,
+                        option4: args.option4,
+                        option5: args.option5,
                         tags: args.tags,
                         hardness: args.hardness,
                         status: args.status,
                         correctGuesses: args.correctGuesses,
-                        incorrectGuesses: args.incorrectGuesses,
+                        option1Guesses: args.option1Guesses,
+                        option2Guesses: args.option2Guesses,
+                        option3Guesses: args.option3Guesses,
+                        option4Guesses: args.option4Guesses,
+                        option5Guesses: args.option5Guesses,
                         dateOfAdding: args.dateOfAdding
 
                     });

@@ -14,7 +14,7 @@
     <table id="questionsTable">
 
         <tr>
-
+            <th>ID</th>
             <th>Question</th>
             <th>Correct Answer</th>
             <th>Option1</th>
@@ -24,11 +24,13 @@
             <th>Option5</th>
             <th>Category</th>
             <th>Hardness</th>
+            <th>Status</th>
         </tr>
 
         <% if(questions.length >0){
                 
             for(let question of questions){
+                var id = question.id;
                 var q  = question.question;
                 var category = question.categoryId;
                 var correctAnswer = question.correctAnswer;
@@ -38,9 +40,15 @@
                 var option4 = question.option4;
                 var option5 = question.option5;
                 var hardness = question.hardness;
+                var status = question.status;
                
             %>
         <tr>
+            <td>
+                <%=
+                    `${id}`
+                    %>
+            </td>
             <td>
                 <%=
             `${q}`
@@ -85,6 +93,11 @@
                 <%=
             `${hardness}`
             %>
+            </td>
+            <td>
+                <%=
+                `${status}`
+                %>
             </td>
         </tr>
         <%}}%>

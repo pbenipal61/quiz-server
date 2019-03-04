@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Update question</title>
+    <link rel="stylesheet" href="/css/addQuestion.css">
+
+
+
+
+
+</head>
+<% 
+    var questionDict = questions["questions"][0];
+     var categoryId = questionDict["categoryId"];
+  
+
+    %>
+
+<body>
+
+    <div id="main" onload="setCategory()">
+
+        <form id="questionForm" method="POST">
+
+
+            <label>About Category</label><br>
+            <div id="categoryDiv"></div>
+            <!-- <select name="category" id="category" onchange="setCategory()">
+                <option value="-1">Choose a category</option>
+                <option value="-2">Add a new category</option>
+                <% 
+                
+               
+                if(questions["categories"].length >0){
+                
+                for(let category of questions["categories"]){
+                    var id  = category.id;
+                    var categoryTitle = category.title;
+                   
+                %>
+                <option value=<%=
+                `${id}`
+                %>>
+                    <%=
+                `${categoryTitle}`
+                %>
+                </option>
+                <%}}%>
+            </select> -->
+            <span id='variableJSON' hidden>
+                <%= JSON.stringify(questions); %>
+            </span>
+            <script>
+
+                console.log("running script");
+                setCategory();
+                function setCategory() {
+                    var questionDict = JSON.parse(document.getElementById("variableJSON").textContent);
+                    //  console.log(questionDict);
+                    var categoryId = questionDict["questions"][0]["categoryId"];
+                    //   console.log("category id is ", categoryId);
+                    var categories = questionDict['categories'];
+
+                    console.log("categories are ", categories);
+                    // console.log("categories length is ", categories.length);
+                    var str = `<select name="category" id="category" value=${categoryId}>
+                            <option value="-1">Choose a category</option>
+                            <option value="-2">Add a new category</option>`;
+
+                    if (categories.length > 0) {
+
+                        for (var i = 0; i < categories.length; i++) {
+                            var category = categories[i];
+                            console.log(i, category);
+                            var id = category.id;
+                            var categoryTitle = category.title;
+                            if (i + 1 == categoryId) {
+                                str = str + `<option value=${id} selected="selected">${categoryTitle}</option>`;
+                            } else {
+                                str = str + `<option value=${id}>${categoryTitle}</option>`;
+                            }
+
+
+                        }
+
+                    }
+
+                    str = str + "</select>";
+
+                    document.getElementById("categoryDiv").innerHTML = str;
+                }
+
+
+                function categorySelectionChange() {
+                    console.log("category selection change");
+                }
+            </script>
+            <br>
+            <div id="newCategoryDiv">
+                <input type="text" name="newCategory" id="newCategory" placeholder="New category title"><br>
+                <label>About Category Status</label><br>
+                <select name="categoryStatus" id="categoryStatus">
+                    <option value="0">Submitted</option>
+                    <option value="1">In Review</option>
+                    <option value="2">Approved</option>
+                </select><br>
+            </div>
+            <br>
+            <label>About question</label><br>
+            <input type="text" name="question" placeholder="Question" value=<%=
+            `${questionDict["question"]}`
+            %>><br>
+            <input type="text" name="correctAnswer" placeholder="Correct Answer" value=<%=
+            `${questionDict["correctAnswer"]}`
+            %>><br>
+            <input type="text" name="option1" placeholder="Option 1" value=<%=
+            `${questionDict["option1"]}`
+            %>>
+            <input type="text" name="option2" placeholder="Option 2" value=<%=
+            `${questionDict["option2"]}`
+            %>>
+            <input type="text" name="option3" placeholder="Option 3" value=<%=
+            `${questionDict["option3"]}`
+            %>><br>
+            <input type="text" name="option4" placeholder="Option 4" value=<%=
+            `${questionDict["option4"]}`
+            %>>
+            <input type="text" name="option5" placeholder="Option 5" value=<%=
+            `${questionDict["option5"]}`
+            %>><br>
+            <input type="text" name="tags" placeholder="tags separated by _" value=<%=
+            `${questionDict["tags"]}`
+            %>><br><br>
+            <label>About Hardness</label><br>
+            <select name="hardness" id="hardness" value=<%=
+            `${questionDict["hardness"]}`
+            %>>
+                <option value="0">Beginner</option>
+                <option value="1">Intermediate</option>
+                <option value="2">Advanced</option>
+            </select><br><br>
+            <label>About Status</label><br>
+            <select name="status" id="status" value=<%=
+            `${questionDict["status"]}`
+            %>>
+                <option value="0">Submitted</option>
+                <option value="1">In Review</option>
+                <option value="2">Approved</option>
+            </select><br><br>
+            <input type="submit" value="Update">
+
+
+
+        </form>
+    </div>
+</body>
+
+</html>

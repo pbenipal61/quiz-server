@@ -181,7 +181,6 @@ const Question = new GraphQLObjectType({
                     return question.getCategory();
                 }
             }
-
         };
     }
 });

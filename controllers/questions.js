@@ -1,15 +1,23 @@
 const Question = require('../models/models').Question;
 const Category = require('../models/models').Category;
+const random = require('../utils/database').random;
 const { graphql } = require('graphql');
 const schema = require('../graphql/schema');
+const { request } = require('graphql-request');
 const fetch = require('node-fetch');
 const axios = require('axios');
 
 exports.addQuestion = (req, res, next) => {
 
-
-    Category.findAll()
+    const query = `{
+        categories{
+          id,title
+        }
+        
+      }`
+    request('http://localhost:3000/graphql', query)
         .then(categories => {
+            //  console.log("categories length is ", categories);
             res.render('questions/addQuestion', {
 
                 categories: categories,
@@ -18,7 +26,19 @@ exports.addQuestion = (req, res, next) => {
 
             });
         })
-        .catch(err => { console.log("Error in fetching all categories list. " + err) });
+        .catch(err => console.log("Error fetching categories"));
+
+    // Category.findAll()
+    //     .then(categories => {
+    //         res.render('questions/addQuestion', {
+
+    //             categories: categories,
+    //             path: '/'
+
+
+    //         });
+    //     })
+    //     .catch(err => { console.log("Error in fetching all categories list. " + err) });
 
 
 
@@ -39,6 +59,133 @@ exports.questions = (req, res, next) => {
         .catch(err => { console.log("Error in fetching all questions list. " + err) });
 
 }
+
+exports.updateQuestion = (req, res, next) => {
+
+    var id = req.params.id;
+    //  console.log(id);
+
+    var query = `{
+    questions (id : ${id}){
+      question,categoryId,status,hardness,correctAnswer,option1,option2,option3,option4,option5
+    }
+    categories{
+        id,title
+      }
+  }`;
+
+
+    request('http://localhost:3000/graphql', query)
+        .then(data => {
+            //  console.log("categories length is ", categories);
+            res.render('questions/updateQuestion', {
+
+                questions: data,
+                path: '/'
+
+
+            });
+        })
+        .catch(err => console.log("Error fetching the question"));
+
+    // Category.findAll()
+    //     .then(categories => {
+    //         res.render('questions/updateQuestion', {
+
+    //             categories: categories,
+    //             path: '/'
+
+
+    //         });
+    //     })
+    //     .catch(err => { console.log("Error in fetching all categories list. " + err) });
+
+
+
+};
+
+exports.postUpdateQuestion = (req, res, next) => {
+
+    console.log("Updating the question ", req.params.id);
+    var categoryId = req.body.category;
+    // var newCategoryTitle = req.body.newCategory;
+    // var categoryStatus = req.body.categoryStatus;
+    var question = req.body.question;
+    if (question == "undefined") {
+        question = "";
+    }
+    var correctAnswer = req.body.correctAnswer;
+    if (correctAnswer == "undefined") {
+        correctAnswer = "";
+    }
+    var option1 = req.body.option1;
+    if (option1 == "undefined") {
+        option1 = "";
+    }
+    var option2 = req.body.option2;
+    if (option2 == "undefined") {
+        option2 = "";
+    }
+    var option3 = req.body.option3;
+    if (option3 == "undefined") {
+        option3 = "";
+    }
+    var option4 = req.body.option4;
+    if (option4 == "undefined") {
+        option4 = "";
+    }
+    var option5 = req.body.option5;
+    if (option5 == "undefined") {
+        option5 = "";
+    }
+    var tags = req.body.tags;
+    var hardness = req.body.hardness;
+    var status = req.body.status;
+
+
+
+    console.log(categoryId, question, correctAnswer, tags, hardness, status);
+    if (categoryId != -1 && categoryId != -2) {
+        Question.update({
+            categoryId: categoryId,
+            question: question,
+            correctAnswer: correctAnswer,
+            option1: option1,
+            option2: option2,
+            option3: option3,
+            option4: option4,
+            option5: option5,
+            tags: tags,
+            hardness: hardness,
+            status: status
+
+
+
+        }, { returning: true, where: { id: req.params.id } })
+            .then(result => {
+                console.log("Question updated");
+                res.status(201).send({
+                    message: "Question updated successfully",
+                    status: 201
+                });
+            })
+            .catch(err => {
+                console.log("Error in updating question. " + err);
+                res.status(400).send({
+                    message: "Failed to update question",
+                    error: err,
+                    status: 400
+                });
+            })
+    } else {
+
+        res.status(400).send({
+            message: "Error in category selection",
+            status: 400
+        });
+    }
+}
+
 exports.postAddQuestion = (req, res, next) => {
 
     console.log("Adding a new question");
@@ -250,6 +397,22 @@ exports.postAddQuestion = (req, res, next) => {
 
 };
 
-function queryGraphQL(str) {
-    return graphql(schema, str);
+
+exports.getQuestionsFromCategory = (req, res, next) => {
+
+
+    var categoryId = req.params.categoryId;
+    var numberOfQuestions = req.params.numberOfQuestions;
+
+    console.log(`fetching ${numberOfQuestions} from category ${categoryId}`);
+
+    Question.findAll({ where: { categoryId: categoryId }, order: random })
+        .then(data => {
+            console.log("fetched questions ", data);
+            res.status(200).send(data);
+        })
+        .catch(err => { console.log("error in fetching questions ", err) });
+
+
 }
+

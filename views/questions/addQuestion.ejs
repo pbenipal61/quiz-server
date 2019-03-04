@@ -19,9 +19,12 @@
             <select name="category" id="category" onchange="categorySelectionChange()">
                 <option value="-1">Choose a category</option>
                 <option value="-2">Add a new category</option>
-                <% if(categories.length >0){
+                <% 
                 
-                for(let category of categories){
+             //   console.log("categories are " , categories["categories"].length);
+                if(categories["categories"].length >0){
+                
+                for(let category of categories["categories"]){
                     var id  = category.id;
                     var categoryTitle = category.title;
                    

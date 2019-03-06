@@ -14,6 +14,8 @@ app.set('view engine', 'ejs');
 app.set('views', 'views');
 
 const questionRoute = require('./routes/questions');
+const gameplayRoute = require('./routes/gameplay');
+
 app.use((req, res, next) => {
 
     res.setHeader('Access-Control-Allow-Origin', '*');
@@ -42,6 +44,7 @@ app.use(
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(express.static(path.join(__dirname, 'public')));
 
+app.use('/gameplay', gameplayRoute);
 app.use('/questions', questionRoute);
 
 app.use('/', (req, res, next) => {

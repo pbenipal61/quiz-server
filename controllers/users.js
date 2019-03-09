@@ -9,6 +9,23 @@ const fetch = require('node-fetch');
 const axios = require('axios');
 
 
+exports.users = (req, res, next) => {
+
+
+    User.findAll()
+        .then(users => {
+            res.render('users/users', {
+
+                users: users,
+                path: '/'
+
+
+            });
+        })
+        .catch(err => { console.log("Error in fetching all users list. " + err) });
+
+}
+
 exports.addUser = (req, res, next) => {
 
 

@@ -1,6 +1,119 @@
 const { buildSchema, GraphQLObjectType, GraphQLInt, GraphQLString, GraphQLList, GraphQLSchema, GraphQLNonNull } = require('graphql');
 const db = require('../utils/database');
 
+
+const User = new GraphQLObjectType({
+
+    name: 'User',
+    description: 'This represents a user',
+    fields: () => {
+
+        return {
+            id: {
+                type: GraphQLInt,
+                resolve(user) {
+                    return user.id;
+                }
+            },
+            sm: {
+                type: GraphQLString,
+                resolve(user) {
+                    return user.sm;
+                }
+            },
+            smId: {
+                type: GraphQLString,
+                resolve(user) {
+                    return user.smId;
+                }
+            },
+            privilege: {
+                type: GraphQLInt,
+                resolve(user) {
+                    return user.privilege;
+                }
+            },
+            name: {
+                type: GraphQLString,
+                resolve(user) {
+                    return user.name;
+                }
+            },
+            birthDate: {
+                type: GraphQLString,
+                resolve(user) {
+                    return user.birthDate;
+                }
+            },
+            email: {
+                type: GraphQLString,
+                resolve(user) {
+                    return user.email;
+                }
+            },
+            profilePhoto: {
+                type: GraphQLString,
+                resolve(user) {
+                    return user.profilePhoto;
+                }
+            },
+            points: {
+                type: GraphQLInt,
+                resolve(user) {
+                    return user.points;
+                }
+            },
+            correctGuesses: {
+                type: GraphQLInt,
+                resolve(user) {
+                    return user.correctGuesses;
+                }
+            },
+            incorrectGuesses: {
+                type: GraphQLInt,
+                resolve(user) {
+                    return user.incorrectGuesses;
+                }
+            },
+            firstLogin: {
+                type: GraphQLString,
+                resolve(user) {
+                    return user.firstLogin;
+                }
+            },
+            lastLogin: {
+                type: GraphQLString,
+                resolve(user) {
+                    return user.lastLogin;
+                }
+            },
+            loginCount: {
+                type: GraphQLInt,
+                resolve(user) {
+                    return user.loginCount;
+                }
+            },
+            device: {
+                type: GraphQLString,
+                resolve(user) {
+                    return user.device;
+                }
+            },
+            country: {
+                type: GraphQLString,
+                resolve(user) {
+                    return user.country;
+                }
+            }
+
+
+
+        };
+    }
+});
+
+
+
 const Category = new GraphQLObjectType({
 
     name: 'Category',
@@ -233,6 +346,31 @@ const Query = new GraphQLObjectType({
                     return db.models.question.findAll({ where: args });
                 }
 
+            },
+            users: {
+                type: new GraphQLList(User),
+                args: {
+                    id: { type: GraphQLInt },
+                    sm: { type: GraphQLString },
+                    smId: { type: GraphQLString },
+                    privilege: { type: GraphQLInt },
+                    name: { type: GraphQLString },
+                    birthDate: { type: GraphQLString },
+                    email: { type: GraphQLString },
+                    profilePhoto: { type: GraphQLString },
+                    points: { type: GraphQLInt },
+                    correctGuesses: { type: GraphQLInt },
+                    incorrectGuesses: { type: GraphQLInt },
+                    firstLogin: { type: GraphQLString },
+                    lastLogin: { type: GraphQLString },
+                    loginCount: { type: GraphQLInt },
+                    device: { type: GraphQLString },
+                    country: { type: GraphQLString },
+
+                },
+                resolve(root, args) {
+                    return db.models.user.findAll({ where: args });
+                }
             }
         }
     }

@@ -15,6 +15,7 @@ app.set('views', 'views');
 
 const questionRoute = require('./routes/questions');
 const gameplayRoute = require('./routes/gameplay');
+const usersRoute = require('./routes/users');
 
 app.use((req, res, next) => {
 
@@ -46,6 +47,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/gameplay', gameplayRoute);
 app.use('/questions', questionRoute);
+app.use('/users', usersRoute);
 
 app.use('/', (req, res, next) => {
 

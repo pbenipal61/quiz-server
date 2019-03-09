@@ -56,6 +56,7 @@ const User = sequelize.define('user', {
     },
     sm: Sequelize.STRING,
     smId: Sequelize.STRING,
+    privilege: Sequelize.INTEGER,
     name: Sequelize.STRING,
     birthDate: Sequelize.STRING,
     email: Sequelize.STRING,

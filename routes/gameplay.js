@@ -9,7 +9,7 @@ router.get('/getAllQuestions', gameplayController.allQuestions);
 // router.get('/updateQuestion/:id', questionsController.updateQuestion);
 // router.post('/updateQuestion/:id', questionsController.postUpdateQuestion);
 // router.get('/questions', questionsController.questions);
-// router.get('/getQuestionsFromCategory/:categoryId/:numberOfQuestions', questionsController.getQuestionsFromCategory);
+router.get('/getCategoriesAndQuestions/:numberOfCategories/:numberOfQuestions', gameplayController.getCategoriesAndQuestions);
 
 
 

@@ -5,7 +5,7 @@ function categorySelectionChange() {
     console.log("val is " + val);
     if (val == -2) {
 
-        document.getElementById("newCategoryDiv").style.display = "flex";
+        document.getElementById("newCategoryDiv").style.display = "inline";
 
     } else {
         document.getElementById("newCategoryDiv").style.display = "none";

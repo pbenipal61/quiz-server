@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Update question</title>
-    <link rel="stylesheet" href="/css/addQuestion.css">
+    <link rel="stylesheet" href="/css/updateQuestion.css">
 
 
 
@@ -23,11 +23,13 @@
 <body>
 
     <div id="main" onload="setCategory()">
-
+        <span id='variableJSON' hidden>
+            <%= JSON.stringify(questions); %>
+        </span>
         <form id="questionForm" method="POST">
 
 
-            <label>About Category</label><br>
+
             <div id="categoryDiv"></div>
             <!-- <select name="category" id="category" onchange="setCategory()">
                 <option value="-1">Choose a category</option>
@@ -51,9 +53,7 @@
                 </option>
                 <%}}%>
             </select> -->
-            <span id='variableJSON' hidden>
-                <%= JSON.stringify(questions); %>
-            </span>
+
             <script>
                 var questionDict;
                 console.log("running script");
@@ -68,9 +68,8 @@
 
                     console.log("categories are ", categories);
                     // console.log("categories length is ", categories.length);
-                    var str = `<select name="category" id="category" value=${categoryId}>
-                            <option value="-1">Choose a category</option>
-                            <option value="-2">Add a new category</option>`;
+                    var str = `<label>category = </label><select name="category" id="category" value=${categoryId}>
+                            <option value="-1">Choose a category</option>`;
 
                     if (categories.length > 0) {
 
@@ -107,38 +106,59 @@
 
                 function setAllValues() {
                     console.log("trying to set all values");
-                    var question = document.getElementById("question");
-                    question.value = questionDict["question"];
-                    document.getElementById("correctAnswer").value = questionDict["correctAnswer"];
-                    document.getElementById("option1").value = questionDict["option1"];
-                    document.getElementById("option2").value = questionDict["option2"];
-                    document.getElementById("option3").value = questionDict["option3"];
-                    document.getElementById("option4").value = questionDict["option4"];
-                    document.getElementById("option5").value = questionDict["option5"];
-                    document.getElementById("tags").value = questionDict["tags"];
+
+
+
+
+
+                    if (questionDict["question"] != null) {
+                        document.getElementById("question").value = questionDict["question"];
+                    }
+                    if (questionDict["correctAnswer"] != null) {
+                        document.getElementById("correctAnswer").value = questionDict["correctAnswer"];
+                    }
+                    if (questionDict["option1"] != null) {
+                        document.getElementById("option1").value = questionDict["option1"];
+                    }
+                    if (questionDict["option2"] != null) {
+                        document.getElementById("option2").value = questionDict["option2"];
+                    }
+                    if (questionDict["option3"] != null) {
+                        document.getElementById("option3").value = questionDict["option3"];
+                    }
+                    if (questionDict["option4"] != null) {
+                        document.getElementById("option4").value = questionDict["option4"];
+                    }
+                    if (questionDict["option5"] != null) {
+                        document.getElementById("option5").value = questionDict["option5"];
+                    }
+                    if (questionDict["tags"] != null) {
+                        document.getElementById("tags").value = questionDict["tags"];
+                    }
+
+
                 }
             </script>
+
+
             <br>
-            <div id="newCategoryDiv">
-                <input type="text" name="newCategory" id="newCategory" placeholder="New category title"><br>
-                <label>About Category Status</label><br>
-                <select name="categoryStatus" id="categoryStatus">
-                    <option value="0">Submitted</option>
-                    <option value="1">In Review</option>
-                    <option value="2">Approved</option>
-                </select><br>
-            </div>
-            <br>
-            <label>About question</label><br>
+            <label>question = </label>
             <input type="text" name="question" id="question" placeholder="Question"><br>
+            <label>correctAnswer = </label>
             <input type="text" name="correctAnswer" placeholder="Correct Answer" id="correctAnswer"><br>
-            <input type="text" name="option1" id="option1" placeholder="Option 1">
-            <input type="text" name="option2" placeholder="Option 2" id="option2">
+            <label>option1 = </label>
+            <input type="text" name="option1" id="option1" placeholder="Option 1"><br>
+            <label>option2 = </label>
+            <input type="text" name="option2" placeholder="Option 2" id="option2"><br>
+            <label>option3 = </label>
             <input type="text" name="option3" placeholder="Option 3" id="option3"><br>
-            <input type="text" name="option4" placeholder="Option 4" id="option4">
+            <label>option4 = </label>
+            <input type="text" name="option4" placeholder="Option 4" id="option4"><br>
+            <label>option5 = </label>
             <input type="text" name="option5" placeholder="Option 5" id="option5"><br>
+            <label>tags = </label>
             <input type="text" name="tags" placeholder="tags separated by _" id="tags"><br><br>
-            <label>About Hardness</label><br>
+            <label>hardness = </label>
             <select name="hardness" id="hardness" value=<%=
             `${questionDict["hardness"]}`
             %>>
@@ -146,7 +166,7 @@
                 <option value="1">Intermediate</option>
                 <option value="2">Advanced</option>
             </select><br><br>
-            <label>About Status</label><br>
+            <label>status = </label>
             <select name="status" id="status" value=<%=
             `${questionDict["status"]}`
             %>>

@@ -15,7 +15,7 @@
     <div id="main">
 
         <form id="questionForm" method="POST">
-            <label>About Category</label><br>
+            <label>category = </label>
             <select name="category" id="category" onchange="categorySelectionChange()">
                 <option value="-1">Choose a category</option>
                 <option value="-2">Add a new category</option>
@@ -39,8 +39,10 @@
                 <%}}%>
             </select> <br>
             <div id="newCategoryDiv">
+                <br>
+                <label>new category title = </label>
                 <input type="text" name="newCategory" id="newCategory" placeholder="New category title"><br>
-                <label>About Category Status</label><br>
+                <label>new category status = </label>
                 <select name="categoryStatus" id="categoryStatus">
                     <option value="0">Submitted</option>
                     <option value="1">In Review</option>
@@ -48,22 +50,29 @@
                 </select><br>
             </div>
             <br>
-            <label>About question</label><br>
+            <label>question = </label>
             <input type="text" name="question" placeholder="Question"><br>
+            <label>correctAnswer = </label>
             <input type="text" name="correctAnswer" placeholder="Correct Answer"><br>
-            <input type="text" name="option1" placeholder="Option 1">
-            <input type="text" name="option2" placeholder="Option 2">
+            <label>option1 = </label>
+            <input type="text" name="option1" placeholder="Option 1"><br>
+            <label>option2 = </label>
+            <input type="text" name="option2" placeholder="Option 2"><br>
+            <label>option3 = </label>
             <input type="text" name="option3" placeholder="Option 3"><br>
-            <input type="text" name="option4" placeholder="Option 4">
+            <label>option4 = </label>
+            <input type="text" name="option4" placeholder="Option 4"><br>
+            <label>option5 = </label>
             <input type="text" name="option5" placeholder="Option 5"><br>
+            <label>tags = </label>
             <input type="text" name="tags" placeholder="tags separated by _"><br><br>
-            <label>About Hardness</label><br>
+            <label>hardness = </label>
             <select name="hardness" id="hardness">
                 <option value="0">Beginner</option>
                 <option value="1">Intermediate</option>
                 <option value="2">Advanced</option>
             </select><br><br>
-            <label>About Status</label><br>
+            <label>status = </label>
             <select name="status" id="status">
                 <option value="0">Submitted</option>
                 <option value="1">In Review</option>

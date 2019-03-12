@@ -108,6 +108,10 @@ exports.postUpdateQuestion = (req, res, next) => {
 
     console.log("Updating the question ", req.params.id);
     var categoryId = req.body.category;
+    var categoryTitle = req.body.categoryTitle;
+    if (categoryTitle == "undefined") {
+        categoryTitle = "";
+    }
     // var newCategoryTitle = req.body.newCategory;
     // var categoryStatus = req.body.categoryStatus;
     var question = req.body.question;
@@ -148,6 +152,7 @@ exports.postUpdateQuestion = (req, res, next) => {
     if (categoryId != -1 && categoryId != -2) {
         Question.update({
             categoryId: categoryId,
+            categoryTitle: categoryTitle,
             question: question,
             correctAnswer: correctAnswer,
             option1: option1,
@@ -190,6 +195,7 @@ exports.postAddQuestion = (req, res, next) => {
 
     console.log("Adding a new question");
     var categoryId = req.body.category;
+    var categoryTitle = req.body.categoryTitle;
     var newCategoryTitle = req.body.newCategory;
     var categoryStatus = req.body.categoryStatus;
     var question = req.body.question;
@@ -208,13 +214,14 @@ exports.postAddQuestion = (req, res, next) => {
     var time = dateTime.getHours() + ":" + dateTime.getMinutes() + ":" + dateTime.getSeconds();
     var record = date + ' ' + time;
 
-    console.log(categoryId, question, correctAnswer, tags, hardness, status, record);
+    console.log(categoryId, question, correctAnswer, tags, hardness, status, record, categoryTitle);
 
     if (question != null && correctAnswer != null && option1 != null && option2 != null && option3 != null) {
         if (categoryId != -1 && categoryId != -2) {
             Question.create({
                 question: question,
                 categoryId: categoryId,
+                categoryTitle: categoryTitle,
                 correctAnswer: correctAnswer,
                 option1: option1,
                 option2: option2,
@@ -342,6 +349,7 @@ exports.postAddQuestion = (req, res, next) => {
                         Question.create({
                             question: question,
                             categoryId: categoryId,
+                            categoryTitle: newCategoryTitle,
                             correctAnswer: correctAnswer,
                             option1: option1,
                             option2: option2,

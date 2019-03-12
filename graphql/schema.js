@@ -186,6 +186,12 @@ const Question = new GraphQLObjectType({
                     return question.categoryId;
                 }
             },
+            categoryTitle: {
+                type: GraphQLString,
+                resolve(question) {
+                    return question.categoryId;
+                }
+            },
             question: {
                 type: GraphQLString,
                 resolve(question) {
@@ -323,6 +329,7 @@ const Query = new GraphQLObjectType({
                 args: {
                     id: { type: GraphQLInt },
                     categoryId: { type: GraphQLInt },
+                    categoryTitle: { type: GraphQLString },
                     question: { type: GraphQLString },
                     correctAnswer: { type: GraphQLString },
                     option1: { type: GraphQLString },

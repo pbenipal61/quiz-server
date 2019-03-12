@@ -26,6 +26,7 @@ const Question = sequelize.define('question', {
         primaryKey: true
     },
     categoryId: Sequelize.INTEGER,
+    categoryTitle: Sequelize.STRING,
     question: Sequelize.STRING,
     correctAnswer: Sequelize.STRING,
     option1: Sequelize.STRING,

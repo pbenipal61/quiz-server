@@ -17,6 +17,6 @@ input {
     padding: 5px;
     font-size: 16px;
 }
-input [type="submit"]{
-   
+#categoryTitle{
+    display: none;
 }

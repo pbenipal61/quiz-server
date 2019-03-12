@@ -9,7 +9,7 @@
     <link rel="stylesheet" href="/css/updateQuestion.css">
 
 
-
+    <script src="/js/updateQuestion.js"></script>
 
 
 </head>
@@ -68,7 +68,7 @@
 
                     console.log("categories are ", categories);
                     // console.log("categories length is ", categories.length);
-                    var str = `<label>category = </label><select name="category" id="category" value=${categoryId}>
+                    var str = `<label>category = </label><select name="category" id="category" value=${categoryId} onchange="categorySelectionChange()">
                             <option value="-1">Choose a category</option>`;
 
                     if (categories.length > 0) {
@@ -101,7 +101,13 @@
 
 
                 function categorySelectionChange() {
-                    console.log("category selection change");
+                    console.log("changing category selection");
+                    var e = document.getElementById("category");
+                    var val = e.options[e.selectedIndex].value;
+                    console.log("val is " + val);
+
+                    console.log(e.options[e.selectedIndex].text);
+                    document.getElementById("categoryTitle").value = e.options[e.selectedIndex].text;
                 }
 
                 function setAllValues() {
@@ -135,13 +141,17 @@
                     if (questionDict["tags"] != null) {
                         document.getElementById("tags").value = questionDict["tags"];
                     }
-
+                    if (questionDict["categoryTitle"] != null) {
+                        document.getElementById("categoryTitle").value = questionDict["categoryTitle"];
+                    }
+                    categorySelectionChange();
 
                 }
             </script>
 
 
             <br>
+            <input type="text" id="categoryTitle" name="categoryTitle" value=""></input>
             <label>question = </label>
             <input type="text" name="question" id="question" placeholder="Question"><br>
             <label>correctAnswer = </label>

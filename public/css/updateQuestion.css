@@ -21,3 +21,7 @@ input {
 input [type="submit"]{
     color: aquamarine;
 }
+
+#categoryTitle{
+    display: none;
+}

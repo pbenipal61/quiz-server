@@ -146,7 +146,36 @@ exports.postUpdateQuestion = (req, res, next) => {
     var hardness = req.body.hardness;
     var status = req.body.status;
 
+    var options = [];
+    var option1 = req.body.option1;
+    if (option1 != null && option1 != "") {
+        options.push(option1);
+    }
+    var option2 = req.body.option2;
+    if (option2 != null && option2 != "") {
+        options.push(option2);
+    }
+    var option3 = req.body.option3;
+    if (option3 != null && option3 != "") {
+        options.push(option3);
+    }
+    var option4 = req.body.option4;
+    if (option4 != null && option4 != "") {
+        options.push(option4);
+    }
+    var option5 = req.body.option5;
+    if (option5 != null && option5 != "") {
+        options.push(option5);
+    }
 
+    var usePermission = 0;
+    console.log(
+        "options length is ", options.length
+    );
+    if ((options.length >= 3) && (question != null && question != "") && (correctAnswer != null && correctAnswer != "")) {
+        console.log("changing use permission");
+        usePermission = 1;
+    }
 
     console.log(categoryId, question, correctAnswer, tags, hardness, status);
     if (categoryId != -1 && categoryId != -2) {
@@ -162,7 +191,8 @@ exports.postUpdateQuestion = (req, res, next) => {
             option5: option5,
             tags: tags,
             hardness: hardness,
-            status: status
+            status: status,
+            usePermission: usePermission
 
 
 
@@ -200,11 +230,37 @@ exports.postAddQuestion = (req, res, next) => {
     var categoryStatus = req.body.categoryStatus;
     var question = req.body.question;
     var correctAnswer = req.body.correctAnswer;
+
+    var options = [];
     var option1 = req.body.option1;
+    if (option1 != null && option1 != "") {
+        options.push(option1);
+    }
     var option2 = req.body.option2;
+    if (option2 != null && option2 != "") {
+        options.push(option2);
+    }
     var option3 = req.body.option3;
+    if (option3 != null && option3 != "") {
+        options.push(option3);
+    }
     var option4 = req.body.option4;
+    if (option4 != null && option4 != "") {
+        options.push(option4);
+    }
     var option5 = req.body.option5;
+    if (option5 != null && option5 != "") {
+        options.push(option5);
+    }
+
+    var usePermission = 0;
+    console.log(
+        "options length is ", options.length
+    );
+    if ((options.length >= 3) && (question != null && question != "") && (correctAnswer != null && correctAnswer != "")) {
+        console.log("changing use permission");
+        usePermission = 1;
+    }
     var tags = req.body.tags;
     var hardness = req.body.hardness;
     var status = req.body.status;
@@ -238,10 +294,13 @@ exports.postAddQuestion = (req, res, next) => {
                 hardness: hardness,
                 correctGuesses: 0,
                 incorrectGuesses: 0,
-                dateOfAdding: record
+                dateOfAdding: record,
+                usePermission: usePermission
 
             }).then(result => {
                 console.log("Question added");
+
+
                 res.status(201).send({
                     message: "Question added successfully",
                     status: 201

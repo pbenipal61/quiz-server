@@ -162,6 +162,12 @@ const Category = new GraphQLObjectType({
                 resolve(category) {
                     return category.getQuestions();
                 }
+            },
+            usePermission: {
+                type: GraphQLInt,
+                resolve(category) {
+                    return category.usePermission;
+                }
             }
 
         };
@@ -294,6 +300,12 @@ const Question = new GraphQLObjectType({
                     return question.dateOfAdding;
                 }
             },
+            usePermission: {
+                type: GraphQLInt,
+                resolve(question) {
+                    return question.usePermission;
+                }
+            },
             category: {
                 type: Category,
                 resolve(question) {
@@ -318,6 +330,7 @@ const Query = new GraphQLObjectType({
                     uses: { type: GraphQLInt },
                     status: { type: GraphQLInt },
                     dateOfAdding: { type: GraphQLString },
+                    usePermission: { type: GraphQLInt },
 
                 },
                 resolve(root, args) {
@@ -347,6 +360,7 @@ const Query = new GraphQLObjectType({
                     status: { type: GraphQLInt },
                     correctGuesses: { type: GraphQLInt },
                     dateOfAdding: { type: GraphQLString },
+                    usePermission: { type: GraphQLInt },
 
                 },
                 resolve(root, args) {
@@ -432,7 +446,8 @@ const Mutation = new GraphQLObjectType({
 
                     dateOfAdding: {
                         type: GraphQLString
-                    }
+                    },
+                    usePermission: { type: GraphQLInt },
 
                 },
                 resolve(_, args) {
@@ -455,7 +470,8 @@ const Mutation = new GraphQLObjectType({
                         option3Guesses: args.option3Guesses,
                         option4Guesses: args.option4Guesses,
                         option5Guesses: args.option5Guesses,
-                        dateOfAdding: args.dateOfAdding
+                        dateOfAdding: args.dateOfAdding,
+                        usePermission: args.usePermission
 
                     });
                 }
@@ -482,6 +498,10 @@ const Mutation = new GraphQLObjectType({
                     },
                     dateOfAdding: {
                         type: GraphQLString
+                    },
+                    usePermission: {
+                        type: GraphQLInt
+
                     }
 
                 },
@@ -492,7 +512,8 @@ const Mutation = new GraphQLObjectType({
                         numberOfQuestions: args.numberOfQuestions,
                         uses: args.uses,
                         status: args.status,
-                        dateOfAdding: args.dateOfAdding
+                        dateOfAdding: args.dateOfAdding,
+                        usePermission: args.usePermission
 
                     });
                 }

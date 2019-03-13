@@ -13,7 +13,8 @@ const Category = sequelize.define('category', {
     numberOfQuestions: Sequelize.INTEGER,
     uses: Sequelize.INTEGER,
     status: Sequelize.INTEGER,
-    dateOfAdding: Sequelize.STRING
+    dateOfAdding: Sequelize.STRING,
+    usePermission: Sequelize.INTEGER
 
 });
 
@@ -43,7 +44,8 @@ const Question = sequelize.define('question', {
     option3Guesses: Sequelize.INTEGER,
     option4Guesses: Sequelize.INTEGER,
     option5Guesses: Sequelize.INTEGER,
-    dateOfAdding: Sequelize.STRING
+    dateOfAdding: Sequelize.STRING,
+    usePermission: Sequelize.INTEGER,
 
 });
 

@@ -27,7 +27,7 @@ exports.getCategoriesAndQuestions = (req, res, next) => {
     // console.log(`fetching ${numberOfQuestions} from category ${categoryId}`);
 
     var categoryQuestionJoints = [];
-    Category.findAll({ order: random, limit: Number(numberOfCategories), distinct: true })
+    Category.findAll({ where: { usePermission: Number(1) }, order: random, limit: Number(numberOfCategories), distinct: true })
         .then(data => {
             console.log("fetched categories ", data.length);
 
@@ -40,7 +40,8 @@ exports.getCategoriesAndQuestions = (req, res, next) => {
 
                 Question.findAll({
                     where: {
-                        categoryId: categoryId
+                        categoryId: categoryId,
+                        usePermission: Number(1)
                     },
 
                     order: random,

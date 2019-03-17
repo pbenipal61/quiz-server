@@ -10,6 +10,8 @@ const sequelize = require('./utils/database');
 const graphqlSchema = require('./graphql/schema');
 const graphqlResolvers = require('./graphql/resolvers');
 
+var serveIndex = require('serve-index');
+
 const app = express();
 
 app.set('view engine', 'ejs');
@@ -48,6 +50,10 @@ app.use(
 
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(express.static(path.join(__dirname, 'public'), { dotfiles: 'allow' }));
+
+
+app.use('/.well-known', express.static('.well-known'), serveIndex('.well-known'));
+
 
 app.use('/gameplay', gameplayRoute);
 app.use('/questions', questionRoute);

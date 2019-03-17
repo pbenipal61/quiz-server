@@ -5,7 +5,18 @@ const app = require('./app');
 const port = process.env.PORT || 80;
 
 
-const server = http.createServer(app);
+const privateKey = fs.readFileSync('/etc/letsencrypt/live/postmaninteractive.com/privkey.pem', 'utf8');
+const certificate = fs.readFileSync('/etc/letsencrypt/live/postmaninteractive.com/cert.pem', 'utf8');
+const ca = fs.readFileSync('/etc/letsencrypt/live/postmaninteractive.com/chain.pem', 'utf8');
+
+const credentials = {
+    key: privateKey,
+    cert: certificate,
+    ca: ca
+};
+
+
+const server = https.createServer(credentials, app);
 server.listen(port, () => {
     console.log(`App running on port ${port}`);
 });

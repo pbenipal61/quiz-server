@@ -47,7 +47,7 @@ app.use(
 );
 
 app.use(bodyParser.urlencoded({ extended: false }));
-app.use(express.static(path.join(__dirname, 'public', { dotfiles: 'allow' })));
+app.use(express.static(path.join(__dirname, 'public'), { dotfiles: 'allow' }));
 
 app.use('/gameplay', gameplayRoute);
 app.use('/questions', questionRoute);

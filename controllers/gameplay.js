@@ -8,6 +8,28 @@ const fetch = require('node-fetch');
 const axios = require('axios');
 const db = require('../utils/database');
 
+//FIREBASE
+const firebaseKey = require("firebase-key");
+var admin = require("firebase-admin");
+var serviceAccount = require('../firebase/quiz-bca26-firebase-adminsdk-ecsar-46fd2e84b0.json');
+admin.initializeApp({
+    credential: admin.credential.cert(serviceAccount),
+    databaseURL: 'https://quiz-bca26.firebaseio.com/'
+});
+var firebaseDb = admin.database();
+
+//.then(data => {
+//     var firebaseDb = admin.database();
+// })
+//     .catch(err => {
+//         console.log("Error in initalising firebase", err);
+//     });
+
+
+//Match models
+const Match = require('../models/matches/match');
+
+
 exports.allQuestions = (req, res, next) => {
 
 
@@ -104,6 +126,41 @@ exports.getCategoriesAndQuestions = (req, res, next) => {
     //     .catch(err => console.log("error in fetching categories ", err));
 
 
+},
+
+
+
+    exports.createMatch = (req, res, next) => {
+
+        var user_id = req.params.id;
+        var ref = firebaseDb.ref(`matches/${user_id}/`);
+        var key = firebaseKey.key();
+        console.log("key is ", key);
+        var match = new Match(key, "D", "D", "ds", "d");
+
+        ref.set(match).then(() => {
+
+            console.log("Match added");
+            res.send();
+        })
+            .catch(err => {
+
+                console.log("error in adding match to firebase");
+            });
+
+        ref.on("value", function (snapshot) {
+            console.log(snapshot.val());
+        }, function (errorObject) {
+            console.log("The read failed: " + errorObject.code);
+        });
+
+
+    }
+
+
+exports.newMatchAddedToFirebase = (req, res, next) => {
+    console.log("Got request from firebase");
+    console.log(req.body);
 }
 
 
@@ -116,16 +173,4 @@ class CategoryQuestionsJoint {
     }
 }
 
-class TempQuestion {
-    constructor(id, question, option1, option2, option3, option4, option5, correctAnswer) {
 
-        this.id = id;
-        this.question = question;
-        this.option1 = option1;
-        this.option2 = option2;
-        this.option3 = option3;
-        this.option4 = option4;
-        this.option5 = option5;
-        this.correctAnswer = correctAnswer;
-    }
-}

@@ -11,7 +11,7 @@ router.get('/getAllQuestions', gameplayController.allQuestions);
 // router.get('/questions', questionsController.questions);
 router.get('/getCategoriesAndQuestions/:numberOfCategories/:numberOfQuestions', gameplayController.getCategoriesAndQuestions);
 
-
-
+router.get('/createMatch/:id', gameplayController.createMatch);
+router.post('newMatchCreated/', gameplayController.newMatchAddedToFirebase);
 
 module.exports = router;

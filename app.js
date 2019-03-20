@@ -1,4 +1,5 @@
 const express = require('express');
+
 const path = require('path');
 const bodyParser = require('body-parser');
 
@@ -20,6 +21,10 @@ app.set('views', 'views');
 const questionRoute = require('./routes/questions');
 const gameplayRoute = require('./routes/gameplay');
 const usersRoute = require('./routes/users');
+
+
+
+
 
 app.use(helmet());
 
@@ -66,9 +71,15 @@ app.use('/', (req, res, next) => {
 
 });
 
+
+
+
+
 sequelize.sync().then(result => {
     // console.log(result);
     console.log("Sequelize models synced");
+    //   var admin = require('firebase-admin');
+
 })
     .catch(err => {
         console.log("Error in sequelize syncing " + err);

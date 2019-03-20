@@ -75,8 +75,38 @@ const User = sequelize.define('user', {
 
 });
 
+const Match = sequelize.define('match', {
+
+    id: {
+        type: Sequelize.STRING,
+        allowNull: false,
+        primaryKey: true
+    },
+    creator: {
+        type: Sequelize.INTEGER,
+        allowNull: false,
+
+    },
+    matchType: {
+        type: Sequelize.STRING,
+        allowNull: false,
+
+    },
+    otherParticipants: {
+        type: Sequelize.JSON
+    },
+    origin: {
+        type: Sequelize.STRING
+    }
+
+
+
+
+});
+
 Category.hasMany(Question);
 Question.belongsTo(Category);
+Match.belongsTo(User);
 
 module.exports.Category = Category;
 module.exports.Question = Question;

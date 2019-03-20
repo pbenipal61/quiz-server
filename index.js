@@ -56,8 +56,8 @@ if (process.env.NODE_ENV != 'development') {
         ca: ca
     };
 
-    const server = https.createServer(credentials, app);
-    server.listen(https_port, () => {
+    const https_server = https.createServer(credentials, app);
+    https_server.listen(https_port, () => {
         console.log(`HTTPS server up`);
     });
 

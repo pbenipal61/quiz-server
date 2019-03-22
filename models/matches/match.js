@@ -1,7 +1,6 @@
 const mongoose = require('mongoose');
 
 const matchSchema = mongoose.Schema({
-    id: mongoose.Types.ObjectId,
     type: String
 });
 

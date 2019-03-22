@@ -7,7 +7,7 @@ const { request } = require('graphql-request');
 const fetch = require('node-fetch');
 const axios = require('axios');
 const db = require('../utils/database');
-
+const mongoose = require('mongoose');
 //FIREBASE
 const firebaseKey = require("firebase-key");
 var admin = require("firebase-admin");
@@ -133,26 +133,42 @@ exports.getCategoriesAndQuestions = (req, res, next) => {
     exports.createMatch = (req, res, next) => {
 
         var user_id = req.params.id;
-        var ref = firebaseDb.ref(`matches/${user_id}/`);
-        var key = firebaseKey.key();
-        console.log("key is ", key);
-        var match = new Match(key, "D", "D", "ds", "d");
-
-        ref.set(match).then(() => {
-
-            console.log("Match added");
-            res.send();
-        })
-            .catch(err => {
-
-                console.log("error in adding match to firebase");
-            });
-
-        ref.on("value", function (snapshot) {
-            console.log(snapshot.val());
-        }, function (errorObject) {
-            console.log("The read failed: " + errorObject.code);
+        var match_id = new mongoose.Types.ObjectId();
+        // var ref = firebaseDb.ref(`matches/${user_id}/`);
+        //var key = firebaseKey.key();
+        // console.log("key is ", key);
+        var match = new Match({
+            id: match_id,
+            type: "D"
         });
+        match.save().then(result => {
+            res.send({
+                message: "Match created",
+                result: result
+
+            });
+        }).catch(err => {
+            res.status(400).send({
+                message: "Error in creating the match",
+                error: err
+
+            });
+        });
+        // ref.set(match).then(() => {
+
+        //     console.log("Match added");
+        //     res.send();
+        // })
+        //     .catch(err => {
+
+        //         console.log("error in adding match to firebase");
+        //     });
+
+        // ref.on("value", function (snapshot) {
+        //     console.log(snapshot.val());
+        // }, function (errorObject) {
+        //     console.log("The read failed: " + errorObject.code);
+        // });
 
 
     }

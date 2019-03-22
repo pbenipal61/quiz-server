@@ -1,13 +1,13 @@
 const Question = require('../models/models').Question;
 const Category = require('../models/models').Category;
-const User = require('../models/models').User;
+const User = require('../models/user');
 const random = require('../utils/database').random;
 const { graphql } = require('graphql');
 const schema = require('../graphql/schema');
 const { request } = require('graphql-request');
 const fetch = require('node-fetch');
 const axios = require('axios');
-
+const mongoose = require('mongoose');
 
 exports.users = (req, res, next) => {
 
@@ -57,31 +57,54 @@ exports.createUser = (req, res, next) => {
     var name = vals["name"];
     var points = vals["points"];
 
-    //  console.log(sm, smId, profilePhoto, privilege, name);
-
-    User.create({
-        sm: sm,
-        smId: smId,
+    var user = new User({
+        originPlatform: sm,
+        originPlatformID: smId,
         name: name,
         privilege: privilege,
-        profilePhoto: profilePhoto,
+        email: email,
+        firstLogin: new Date(),
         points: points
+    });
+    user.save().then(result => {
+        res.send({
+            message: "User created",
+            result: result
 
-    }).then(result => {
+        });
+    }).catch(err => {
+        res.status(400).send({
+            message: "Error in creating the user",
+            error: err
 
-        res.status(201).send({
-            message: "User created successfully",
-            status: 201
         });
-    })
-        .catch(err => {
-            console.log("Error in creating user. " + err);
-            res.status(400).send({
-                message: "Failed to create user",
-                error: err,
-                status: 400
-            });
-        });
+    });
+
+    //  console.log(sm, smId, profilePhoto, privilege, name);
+
+    // User.create({
+    //     sm: sm,
+    //     smId: smId,
+    //     name: name,
+    //     privilege: privilege,
+    //     profilePhoto: profilePhoto,
+    //     points: points
+
+    // }).then(result => {
+
+    //     res.status(201).send({
+    //         message: "User created successfully",
+    //         status: 201
+    //     });
+    // })
+    //     .catch(err => {
+    //         console.log("Error in creating user. " + err);
+    //         res.status(400).send({
+    //             message: "Failed to create user",
+    //             error: err,
+    //             status: 400
+    //         });
+    //     });
 
 
 
@@ -91,35 +114,57 @@ exports.createUser = (req, res, next) => {
 exports.postAddUser = (req, res, next) => {
 
     console.log("Adding a new user");
-    var sm = req.body.sm;
-    var smId = req.body.smId;
+    var originPlatform = req.body.sm;
+    var originPlatformID = req.body.smId;
     var name = req.body.name;
     var privilege = req.body.privilege;
     var email = req.body.email;
 
-
-    User.create({
-        sm: sm,
-        smId: smId,
+    var id = new mongoose.Types.ObjectId();
+    var user = new User({
+        originPlatform: originPlatform,
+        originPlatformID: originPlatformID,
         name: name,
         privilege: privilege,
-        email: email
+        email: email,
+        firstLogin: new Date(),
+    });
+    user.save().then(result => {
+        res.send({
+            message: "User created",
+            result: result
 
-    }).then(result => {
+        });
+    }).catch(err => {
+        res.status(400).send({
+            message: "Error in creating the user",
+            error: err
 
-        res.status(201).send({
-            message: "User added successfully",
-            status: 201
         });
-    })
-        .catch(err => {
-            console.log("Error in adding user. " + err);
-            res.status(400).send({
-                message: "Failed to add user",
-                error: err,
-                status: 400
-            });
-        });
+    });
+
+    // User.create({
+    //     sm: sm,
+    //     smId: smId,
+    //     name: name,
+    //     privilege: privilege,
+    //     email: email
+
+    // }).then(result => {
+
+    //     res.status(201).send({
+    //         message: "User added successfully",
+    //         status: 201
+    //     });
+    // })
+    //     .catch(err => {
+    //         console.log("Error in adding user. " + err);
+    //         res.status(400).send({
+    //             message: "Failed to add user",
+    //             error: err,
+    //             status: 400
+    //         });
+    //     });
 
 
 

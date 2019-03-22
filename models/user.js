@@ -1,28 +1,22 @@
-const Sequelize = require('sequelize');
-const sequelize = require('../utils/database');
+const mongoose = require('mongoose');
 
-const User = sequelize.define('user', {
+const userSchema = mongoose.Schema({
 
-    id: {
-        type: Sequelize.INTEGER,
-        autoIncrement: true,
-        allowNull: false,
-        primaryKey: true
-    },
-    facebookId: Sequelize.STRING,
-    name: Sequelize.STRING,
-    birthDate: Sequelize.STRING,
-    email: Sequelize.STRING,
-    profilePhoto: Sequelize.STRING,
-    points: Sequelize.INTEGER,
-    correctGuesses: Sequelize.INTEGER,
-    incorrectGuesses: Sequelize.INTEGER,
-    firstLogin: Sequelize.STRING,
-    lastLogin: Sequelize.STRING,
-    loginCount: Sequelize.INTEGER,
-    device: Sequelize.STRING,
-    country: Sequelize.STRING
+    originPlatform: mongoose.Schema.Types.String,
+    originPlatformID: mongoose.Schema.Types.String,
+    name: mongoose.Schema.Types.String,
+    birthDate: mongoose.Schema.Types.Date,
+    email: mongoose.Schema.Types.String,
+    points: mongoose.Schema.Types.Number,
+    privilege: mongoose.Schema.Types.Number,
+    correctGuesses: mongoose.Schema.Types.Number,
+    incorrectGuesses: mongoose.Schema.Types.Number,
+    firstLogin: mongoose.Schema.Types.Date,
+    lastLogin: mongoose.Schema.Types.Date,
+    loginCount: mongoose.Schema.Types.Number,
+    device: mongoose.Schema.Types.String,
+    country: mongoose.Schema.Types.String
 
 });
 
-//module.exports = User;
+module.exports = mongoose.model('User', userSchema);

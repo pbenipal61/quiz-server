@@ -26,12 +26,13 @@ const usersRoute = require('./routes/users');
 
 
 
-mongoose.connect('mongodb+srv://root:yFFqsF4R5CkZwSjc@quiz-t7evv.mongodb.net/test?retryWrites=true').then(res => {
-    console.log("MongoDB connected...");
-}).catch(err => {
-    console.log("MongoDB failed to connect!");
+mongoose.connect('mongodb+srv://root:yFFqsF4R5CkZwSjc@quiz-t7evv.mongodb.net/Quiz?retryWrites=true', { useNewUrlParser: true })
+    .then(res => {
+        console.log("MongoDB connected...");
+    }).catch(err => {
+        console.log("MongoDB failed to connect!", err);
 
-});
+    });
 
 app.use(helmet());
 

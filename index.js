@@ -41,8 +41,8 @@ http_server.listen(port, () => {
     console.log("HTTP server up");
 });
 
-
-
+var WebsocketClientsStore = require('./utils/websocketClientsStore');
+var wscs = new WebsocketClientsStore().getInstance();
 if (process.env.NODE_ENV != 'development') {
 
 
@@ -64,15 +64,19 @@ if (process.env.NODE_ENV != 'development') {
     const WebSocket = require('ws');
     const wss = new WebSocket.Server({ server: https_server });
 
+
     wss.on('connection', function connection(ws) {
 
         //  console.log("clients are ", wss.clients);
 
         ws.on('message', function incoming(message) {
-            console.log('received: %s', message);
+            // console.log('received: %s', message);
+            var t = JSON.parse(message);
+            console.log(t);
+
         });
-        console.log(ws);
-        ws.send('aint gonna curse dawg');
+        // console.log(ws);
+        ws.send('Welcome to MadMind');
     });
 
 
@@ -83,16 +87,28 @@ if (process.env.NODE_ENV != 'development') {
 
     wss.on('connection', function connection(ws) {
 
-        //  console.log("clients are ", wss.clients);
-
         ws.on('message', function incoming(message) {
-            console.log('received: %s', message);
+
+            var t = JSON.parse(message);
+
+            if (t["type"] === "FIRST EVENT") {
+                console.log("First event ");
+                wscs.add(t["id"], ws);
+            }
+
         });
-        console.log(ws);
-        ws.send('aint gonna curse dawg');
+        ws.on('close', function closing(evt) {
+
+            console.log("A socket closed");
+        });
+        ws.send('Welcome to MadMind');
     });
 
+    wss.once('disconnect', function () {
+        // socket is disconnected
 
+        console.log("A socket disconnected");
+    });
 
 }
 

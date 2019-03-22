@@ -8,6 +8,8 @@ const helmet = require("helmet");
 const graphqlHttp = require('express-graphql');
 const sequelize = require('./utils/database');
 
+const mongoose = require('mongoose');
+
 const graphqlSchema = require('./graphql/schema');
 const graphqlResolvers = require('./graphql/resolvers');
 
@@ -19,12 +21,17 @@ app.set('view engine', 'ejs');
 app.set('views', 'views');
 
 const questionRoute = require('./routes/questions');
-const gameplayRoute = require('./routes/gameplay');
+const apiRoute = require('./routes/api');
 const usersRoute = require('./routes/users');
 
 
 
+mongoose.connect('mongodb+srv://root:yFFqsF4R5CkZwSjc@quiz-t7evv.mongodb.net/test?retryWrites=true', { useMongoClient: true }).then(res => {
+    console.log("MongoDB connected...");
+}).catch(err => {
+    console.log("MongoDB failed to connect!");
 
+});
 
 app.use(helmet());
 
@@ -60,7 +67,7 @@ app.use(express.static(path.join(__dirname, 'public'), { dotfiles: 'allow' }));
 app.use('/.well-known', express.static('.well-known'), serveIndex('.well-known'));
 
 
-app.use('/gameplay', gameplayRoute);
+app.use('/api', apiRoute);
 app.use('/questions', questionRoute);
 app.use('/users', usersRoute);
 
@@ -73,12 +80,21 @@ app.use('/', (req, res, next) => {
 
 
 
-
+//yFFqsF4R5CkZwSjc
 
 sequelize.sync().then(result => {
     // console.log(result);
-    console.log("Sequelize models synced");
+    console.log("MySQL DB connected...")
+    console.log("MySQL models synced...");
     //   var admin = require('firebase-admin');
+    // var mongoose = require('mongoose');
+    // mongoose.connect('mongodb://localhost/test');
+    // var db = mongoose.connection;
+    // db.on('error', console.error.bind(console, 'connection error:'));
+    // db.once('open', function () {
+    //     // we're connected!
+    //     console.log("MongoDB connected...");
+    // });
 
 })
     .catch(err => {

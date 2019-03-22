@@ -26,7 +26,7 @@ const usersRoute = require('./routes/users');
 
 
 
-mongoose.connect('mongodb+srv://root:yFFqsF4R5CkZwSjc@quiz-t7evv.mongodb.net/test?retryWrites=true', { useMongoClient: true }).then(res => {
+mongoose.connect('mongodb+srv://root:yFFqsF4R5CkZwSjc@quiz-t7evv.mongodb.net/test?retryWrites=true').then(res => {
     console.log("MongoDB connected...");
 }).catch(err => {
     console.log("MongoDB failed to connect!");

@@ -6,7 +6,7 @@ const { graphql } = require('graphql');
 const schema = require('../graphql/schema');
 const { request } = require('graphql-request');
 const fetch = require('node-fetch');
-const axios = require('axios');
+
 const mongoose = require('mongoose');
 
 exports.users = (req, res, next) => {

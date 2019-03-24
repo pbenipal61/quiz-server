@@ -1,22 +1,16 @@
 const Question = require('../models/models').Question;
+const MQuestion = require('../models/question');
 const Category = require('../models/models').Category;
-const random = require('../utils/database').random;
+const MCategory = require('../models/category');
+
 const { graphql } = require('graphql');
 const schema = require('../graphql/schema');
 const { request } = require('graphql-request');
 const fetch = require('node-fetch');
-const axios = require('axios');
+
 const db = require('../utils/database');
 const mongoose = require('mongoose');
-//FIREBASE
-const firebaseKey = require("firebase-key");
-var admin = require("firebase-admin");
-var serviceAccount = require('../firebase/quiz-bca26-firebase-adminsdk-ecsar-46fd2e84b0.json');
-admin.initializeApp({
-    credential: admin.credential.cert(serviceAccount),
-    databaseURL: 'https://quiz-bca26.firebaseio.com/'
-});
-var firebaseDb = admin.database();
+
 
 //.then(data => {
 //     var firebaseDb = admin.database();
@@ -45,85 +39,50 @@ exports.getCategoriesAndQuestions = (req, res, next) => {
 
     var numberOfCategories = req.params.numberOfCategories;
     var numberOfQuestions = req.params.numberOfQuestions;
+    var returnObj = {};
+    var categoriesUsed = 0;
+    var filter = { usePermission: 1 };
+    // var fields = { name: 1, description: 0 };
+    // var options = { skip: 10, limit: 10, populate: 'mySubDoc' };
+    // MCategory.findRandom(filter, {}, { limit: Number(numberOfCategories) }, function (err, categories) {
+    //     if (!err) {
 
-    // console.log(`fetching ${numberOfQuestions} from category ${categoryId}`);
+    //         res.status(200).send({
+    //             categories
+    //         });
 
-    var categoryQuestionJoints = [];
-    Category.findAll({ where: { usePermission: Number(1) }, order: random, limit: Number(numberOfCategories), distinct: true })
-        .then(data => {
-            console.log("fetched categories ", data.length);
-
-
-            for (var i = 0; i < data.length; i++) {
-                console.log("looping for " + data[i].id);
-                var categoryId = data[i].id;
-                var categoryTitle = data[i].title;
-                console.log(categoryId, categoryTitle);
-
-                Question.findAll({
-                    where: {
-                        categoryId: categoryId,
-                        usePermission: Number(1)
-                    },
-
-                    order: random,
-                    limit: Number(numberOfQuestions),
-                    distinct: true
-
-                })
-                    .then(data2 => {
-
-
-                        var categoryQuestionJoint = new CategoryQuestionsJoint(data2, categoryId, categoryTitle);
-                        categoryQuestionJoints.push(categoryQuestionJoint);
-                        console.log(categoryQuestionJoint);
-
-                        if (categoryQuestionJoints.length >= numberOfCategories) {
-                            res.status(200).send(categoryQuestionJoints);
-                        }
-
-
-
-
-                    })
-                    .catch(err2 => console.log("Error in fetching questions for category ", categoryId));
-
-
-            }
-
-
-
-            // console.log(categoryIds)
-        })
-        .catch(err => { console.log("error in fetching categories ", err) });
-
-
-    // db.getConnection((err0, db_) => {
-
-    //     if (err0) {
-    //         throw err0;
+    //     } else {
+    //         res.status(400).send({
+    //             message: "Error in fetching categories",
+    //             err: err
+    //         });
     //     }
-    //     var sql1 = `SELECT * FROM categories ORDER BY rand() LIMIT ${numberOfCategories}`;
-    //     console.log("sql1 is ", sql1);
-
-    //     db_.execute(sql1, function (err1, result1, fields1) {
-    //         db_.release();
-    //         if (err1) {
-    //             throw err1;
-    //         }
-
-    //         console.log("Categories fetched", result1);
-    //         res.status(201).send("Query worked");
-
-    //     });
     // });
 
 
-    // Category.findAndCountAll({ limit: Number(numberOfCategories) })
-    //     .then(result => {
-    //         console.log("fetched categories are ", result);
+
+    // MCategory.countDocuments().then(result => {
+    //     res.status(200).send({
+    //         result
     //     })
-    //     .catch(err => console.log("error in fetching categories ", err));
+    // }).catch(err => {
+    //     res.status(400).send({
+    //         message: "Error in counting categories"
+    //     })
+    // })
+
+
+    MCategory.aggregate([{ $match: {} }, { $sample: { size: Number(numberOfCategories) } }], (err, result) => {
+        if (err) {
+            res.status(400).send({
+                message: "Error in getting categories"
+            })
+        } else {
+            res.status(200).send({
+                result
+            })
+        }
+    });
 
 
 },

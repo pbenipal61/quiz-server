@@ -22,10 +22,10 @@
                 <% 
                 
              //   console.log("categories are " , categories["categories"].length);
-                if(categories["categories"].length >0){
+                if(categories.length >0){
                 
-                for(let category of categories["categories"]){
-                    var id  = category.id;
+                for(let category of categories){
+                    var id  = category._id;
                     var categoryTitle = category.title;
                    
                 %>

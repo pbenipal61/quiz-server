@@ -23,6 +23,7 @@ app.set('views', 'views');
 const questionRoute = require('./routes/questions');
 const apiRoute = require('./routes/api');
 const usersRoute = require('./routes/users');
+const miscRoute = require('./routes/misc');
 
 
 
@@ -71,6 +72,7 @@ app.use('/.well-known', express.static('.well-known'), serveIndex('.well-known')
 app.use('/api', apiRoute);
 app.use('/questions', questionRoute);
 app.use('/users', usersRoute);
+app.use('/misc', miscRoute);
 
 app.use('/', (req, res, next) => {
 
@@ -86,7 +88,7 @@ app.use('/', (req, res, next) => {
 sequelize.sync().then(result => {
     // console.log(result);
     console.log("MySQL DB connected...")
-    console.log("MySQL models synced...");
+    console.log("Sequelize models synced...");
     //   var admin = require('firebase-admin');
     // var mongoose = require('mongoose');
     // mongoose.connect('mongodb://localhost/test');

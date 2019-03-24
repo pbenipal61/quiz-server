@@ -1,35 +1,26 @@
 const Question = require('../models/models').Question;
+const MQuestion = require('../models/question');
+const MCategory = require('../models/category');
 const Category = require('../models/models').Category;
 const random = require('../utils/database').random;
 const { graphql } = require('graphql');
 const schema = require('../graphql/schema');
 const { request } = require('graphql-request');
 const fetch = require('node-fetch');
-const axios = require('axios');
+
 
 exports.addQuestion = (req, res, next) => {
 
-    const query = `{
-        categories{
-          id,title
-        }
-        
-      }`
-    request('http://localhost:3000/graphql', query)
-        .then(categories => {
-            //  console.log("categories length is ", categories);
-            res.render('questions/addQuestion', {
 
-                categories: categories,
-                path: '/'
+    // const query = `{
+    //     categories{
+    //       id,title
+    //     }
 
-
-            });
-        })
-        .catch(err => console.log("Error fetching categories"));
-
-    // Category.findAll()
+    //   }`
+    // request('http://localhost:3000/graphql', query)
     //     .then(categories => {
+    //         //  console.log("categories length is ", categories);
     //         res.render('questions/addQuestion', {
 
     //             categories: categories,
@@ -38,25 +29,52 @@ exports.addQuestion = (req, res, next) => {
 
     //         });
     //     })
-    //     .catch(err => { console.log("Error in fetching all categories list. " + err) });
+    //     .catch(err => console.log("Error fetching categories"));
+
+    MCategory.find()
+        .then(categories => {
+            console.log(categories);
+            res.render('questions/addQuestion', {
+
+                categories: categories,
+                path: '/'
+
+
+            });
+        })
+        .catch(err => {
+            // console.log("Error in fetching all categories list. " + err) 
+            res.status(400).send({
+                message: "Error in fetching all categories list",
+                err: err
+            });
+        });
 
 
 
 };
 exports.questions = (req, res, next) => {
 
-
-    Question.findAll()
-        .then(questions => {
-            res.render('questions/questions', {
-
-                questions: questions,
-                path: '/'
-
-
+    MQuestion.find().then(result => {
+        res.status(200).send(result);
+    })
+        .catch(err => {
+            res.status(400).send({
+                message: "Error in getting all questions",
+                err: err
             });
         })
-        .catch(err => { console.log("Error in fetching all questions list. " + err) });
+    // Question.findAll()
+    //     .then(questions => {
+    //         res.render('questions/questions', {
+
+    //             questions: questions,
+    //             path: '/'
+
+
+    //         });
+    //     })
+    //     .catch(err => { console.log("Error in fetching all questions list. " + err) });
 
 }
 
@@ -274,7 +292,9 @@ exports.postAddQuestion = (req, res, next) => {
 
     if (question != null && correctAnswer != null && option1 != null && option2 != null && option3 != null) {
         if (categoryId != -1 && categoryId != -2) {
-            Question.create({
+
+
+            var newQuestion = new MQuestion({
                 question: question,
                 categoryId: categoryId,
                 categoryTitle: categoryTitle,
@@ -297,13 +317,16 @@ exports.postAddQuestion = (req, res, next) => {
                 dateOfAdding: record,
                 usePermission: usePermission
 
-            }).then(result => {
+            })
+
+            newQuestion.save().then(result => {
                 console.log("Question added");
 
 
                 res.status(201).send({
                     message: "Question added successfully",
-                    status: 201
+                    status: 201,
+                    result: result
                 });
             })
                 .catch(err => {

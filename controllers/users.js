@@ -44,27 +44,27 @@ exports.addUser = (req, res, next) => {
 
 exports.createUser = (req, res, next) => {
 
-
+    // name, originPlatform, originPlatformId, userType, initialPoints
 
     var vals = JSON.parse(Object.keys(req.body)[0]);
     console.log(vals);
 
     console.log("Adding a new user");
-    var sm = vals["sm"];
-    var smId = vals["smId"];
-    var profilePhoto = vals["profilePhoto"];
-    var privilege = vals["privilege"];
+    var originPlatform = vals["originPlatform"];
+    var originPlatformId = vals["originPlatformId"];
+
+    var userType = vals["userType"];
     var name = vals["name"];
-    var points = vals["points"];
+    var initialPoints = vals["initialPoints"];
 
     var user = new User({
-        originPlatform: sm,
-        originPlatformID: smId,
+        originPlatform: originPlatform,
+        originPlatformID: originPlatformId,
         name: name,
-        privilege: privilege,
-        email: email,
+        privilege: userType,
+
         firstLogin: new Date(),
-        points: points
+        points: initialPoints
     });
     user.save().then(result => {
         res.send({
@@ -120,7 +120,7 @@ exports.postAddUser = (req, res, next) => {
     var privilege = req.body.privilege;
     var email = req.body.email;
 
-    var id = new mongoose.Types.ObjectId();
+
     var user = new User({
         originPlatform: originPlatform,
         originPlatformID: originPlatformID,

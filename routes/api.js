@@ -9,9 +9,11 @@ router.get('/getAllQuestions', apiController.allQuestions);
 // router.get('/updateQuestion/:id', questionsController.updateQuestion);
 // router.post('/updateQuestion/:id', questionsController.postUpdateQuestion);
 // router.get('/questions', questionsController.questions);
-router.get('/getCategoriesAndQuestions/:numberOfCategories/:numberOfQuestions', apiController.getCategoriesAndQuestions);
+router.get('/getCategories/:numberOfCategories', apiController.getCategories);
 
-router.get('/createMatch/:id', apiController.createMatch);
-router.post('newMatchCreated/', apiController.newMatchAddedToFirebase);
+router.get('/getQuestions/:numberOfQuestions', apiController.getQuestions);
+
+router.post('/createMatch', apiController.createMatch);
+router.get('/getMadMindId/:originPlatformId', apiController.getMadMindId);
 
 module.exports = router;

@@ -86,8 +86,18 @@ function startWebsocketServer(server) {
             var t = JSON.parse(message);
             console.log(message);
             if (t["type"] === "FIRST EVENT") {
-                console.log("First event ");
-                wscs.add(t["id"], ws);
+                console.log("First event with ", t["id"]);
+                var tempConn = wscs.get(t["id"]);
+                if (tempConn != null) {
+                    if (wscs.isOpen(t["id"])) {
+
+                    } else {
+                        wscs.add(t["id"], ws);
+                    }
+                } else {
+                    wscs.add(t["id"], ws);
+                }
+
             } else {
                 console.log(wscs.sendDataToClient(t["sendTo"], true, t["message"]));
             }

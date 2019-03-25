@@ -1,5 +1,25 @@
 const mongoose = require('mongoose');
 
+
+const miniMatchDataSchema = mongoose.Schema({
+    "matchId": mongoose.Schema.Types.ObjectId,
+    "createdAt": {
+        type: mongoose.Schema.Types.Date,
+        default: new Date()
+    },
+    "running": {
+        type: Boolean,
+        default: false
+    }
+});
+
+const customLocale = mongoose.Schema({
+    country: mongoose.Schema.Types.String,
+    city: mongoose.Schema.Types.String,
+    language: mongoose.Schema.Types.String,
+    timeZone: mongoose.Schema.Types.String
+})
+
 const userSchema = mongoose.Schema({
 
     originPlatform: mongoose.Schema.Types.String,
@@ -15,7 +35,8 @@ const userSchema = mongoose.Schema({
     lastLogin: mongoose.Schema.Types.Date,
     loginCount: mongoose.Schema.Types.Number,
     device: mongoose.Schema.Types.String,
-    country: mongoose.Schema.Types.String
+    locale: customLocale,
+    matches: [miniMatchDataSchema]
 
 });
 

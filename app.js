@@ -5,6 +5,8 @@ const bodyParser = require('body-parser');
 
 const helmet = require("helmet");
 
+const expressip = require('express-ip');
+
 const graphqlHttp = require('express-graphql');
 const sequelize = require('./utils/database');
 
@@ -68,13 +70,18 @@ app.use(express.static(path.join(__dirname, 'public'), { dotfiles: 'allow' }));
 
 app.use('/.well-known', express.static('.well-known'), serveIndex('.well-known'));
 
+app.use(expressip().getIpInfoMiddleware);
 
 app.use('/api', apiRoute);
 app.use('/questions', questionRoute);
 app.use('/users', usersRoute);
 app.use('/misc', miscRoute);
-
-app.use('/', (req, res, next) => {
+app.use('/savedLocale', (req, res, next) => {
+    const ipInfo = req.ipInfo;
+    // var message = `Hey, you are browsing from ${ipInfo.city}, ${ipInfo.country}`;
+    res.send(ipInfo);
+});
+app.use('*', (req, res) => {
 
     console.log("404 (Page not found)");
     res.status(404).send();
@@ -85,23 +92,14 @@ app.use('/', (req, res, next) => {
 
 //yFFqsF4R5CkZwSjc
 
-sequelize.sync().then(result => {
-    // console.log(result);
-    console.log("MySQL DB connected...")
-    console.log("Sequelize models synced...");
-    //   var admin = require('firebase-admin');
-    // var mongoose = require('mongoose');
-    // mongoose.connect('mongodb://localhost/test');
-    // var db = mongoose.connection;
-    // db.on('error', console.error.bind(console, 'connection error:'));
-    // db.once('open', function () {
-    //     // we're connected!
-    //     console.log("MongoDB connected...");
-    // });
+// sequelize.sync().then(result => {
+//     // console.log(result);
+//     console.log("MySQL DB connected...")
+//     console.log("Sequelize models synced...");
 
-})
-    .catch(err => {
-        console.log("Error in sequelize syncing " + err);
-    });
+// })
+//     .catch(err => {
+//         console.log("Error in sequelize syncing " + err);
+//     });
 
 module.exports = app;

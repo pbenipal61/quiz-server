@@ -15,6 +15,23 @@ class WebsocketClientsStore {
     return this._data[key];
   }
 
+  getOpenConnections() {
+    return Object.keys(this._data);
+  }
+
+  isOpen(key, removeIfClosed) {
+    var client = this._data[key];
+    if (client != null) {
+      if (client.readyState === client.OPEN) {
+        return true;
+      } else {
+        delete this._data[key];
+        return false;
+      }
+    } else {
+      return false;
+    }
+  }
   sendDataToClient(key, removeIfClosed, data) {
     var client = this._data[key];
     if (client != null) {

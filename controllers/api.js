@@ -2,6 +2,7 @@ const Question = require('../models/models').Question;
 const MQuestion = require('../models/question');
 const Category = require('../models/models').Category;
 const MCategory = require('../models/category');
+const User = require('../models/user');
 
 const { graphql } = require('graphql');
 const schema = require('../graphql/schema');
@@ -11,7 +12,8 @@ const fetch = require('node-fetch');
 const db = require('../utils/database');
 const mongoose = require('mongoose');
 
-
+var WebsocketClientsStore = require('../utils/websocketClientsStore');
+var wscs = new WebsocketClientsStore().getInstance();
 //.then(data => {
 //     var firebaseDb = admin.database();
 // })
@@ -34,7 +36,22 @@ exports.allQuestions = (req, res, next) => {
         .catch(err => { console.log("Error in fetching all questions list. " + err) });
 
 }
-exports.getCategoriesAndQuestions = (req, res, next) => {
+
+exports.getMadMindId = (req, res, next) => {
+
+    var originPlatformId = req.params.originPlatformId;
+    User.findOne({ originPlatformID: originPlatformId }).then(result => {
+        res.status(200).send(result["_id"]);
+    }).catch(err => {
+        res.status(400).send({
+            message: "Failed to find MadMind id for " + originPlatformId,
+            error: err
+        });
+    })
+
+}
+
+exports.getCategories = (req, res, next) => {
 
 
     var numberOfCategories = req.params.numberOfCategories;
@@ -72,7 +89,7 @@ exports.getCategoriesAndQuestions = (req, res, next) => {
     // })
 
 
-    MCategory.aggregate([{ $match: {} }, { $sample: { size: Number(numberOfCategories) } }], (err, result) => {
+    MCategory.aggregate([{ $match: filter }, { $sample: { size: Number(numberOfCategories) } }], (err, result) => {
         if (err) {
             res.status(400).send({
                 message: "Error in getting categories"
@@ -87,65 +104,131 @@ exports.getCategoriesAndQuestions = (req, res, next) => {
 
 },
 
+    exports.getQuestions = (req, res, next) => {
 
 
-    exports.createMatch = (req, res, next) => {
 
-        var user_id = req.params.id;
-        var match_id = new mongoose.Types.ObjectId();
-        // var ref = firebaseDb.ref(`matches/${user_id}/`);
-        //var key = firebaseKey.key();
-        // console.log("key is ", key);
-        var match = new Match({
-            id: match_id,
-            type: "D"
+        var numberOfQuestions = req.params.numberOfQuestions;
+        var returnObj = {};
+        var categoriesUsed = 0;
+        var filter = { usePermission: 1 };
+
+
+        MQuestion.aggregate([{ $match: filter }, { $sample: { size: Number(numberOfQuestions) } }], (err, result) => {
+            if (err) {
+                res.status(400).send({
+                    message: "Error in getting questions"
+                })
+            } else {
+                res.status(200).send({
+                    result
+                })
+            }
         });
-        match.save().then(result => {
-            res.send({
-                message: "Match created",
-                result: result
-
-            });
-        }).catch(err => {
-            res.status(400).send({
-                message: "Error in creating the match",
-                error: err
-
-            });
-        });
-        // ref.set(match).then(() => {
-
-        //     console.log("Match added");
-        //     res.send();
-        // })
-        //     .catch(err => {
-
-        //         console.log("error in adding match to firebase");
-        //     });
-
-        // ref.on("value", function (snapshot) {
-        //     console.log(snapshot.val());
-        // }, function (errorObject) {
-        //     console.log("The read failed: " + errorObject.code);
-        // });
 
 
+    };
+
+
+exports.createMatch = (req, res, next) => {
+
+    var vals = JSON.parse(Object.keys(req.body)[0]);
+    console.log(vals);
+
+    var participants = vals["participants"];
+    var matchType = vals["matchType"];
+    createMatchAsync(res, participants, matchType);
+    // var match_id = new mongoose.Types.ObjectId();
+
+    // var match = new Match({
+    //     id: match_id,
+    //     type: "D"
+    // });
+    // match.save().then(result => {
+    //     res.send({
+    //         message: "Match created",
+    //         result: result
+
+    //     });
+    // }).catch(err => {
+    //     res.status(400).send({
+    //         message: "Error in creating the match",
+    //         error: err
+
+    //     });
+    // });
+
+
+
+};
+
+
+
+const createMatchAsync = async (res, participants, matchType) => {
+
+
+
+
+    var filter = { usePermission: 1 };
+    const questions = await MQuestion.aggregate([{ $match: filter }, { $sample: { size: 15 } }]);
+    console.log(questions.length);
+
+    var rounds = [];
+
+    for (var i = 0; i < 3; i++) {
+        var questions_ = questions;
+        const round = {
+            "numberOfQuestions": 5,
+            "questions": questions_.slice(5 * i, (5 * (i + 1)))
+        }
+        rounds.push(round);
+        //  console.log(round.questions.length);
+    }
+
+    var match = await new Match({
+        type: matchType,
+        participants: participants,
+        numberOfRounds: 3,
+        bet: 10,
+        currentRound: 0,
+        currentTurn: participants[0],
+        rounds: rounds
+
+    });
+
+    var matchSaveResult = await match.save();
+    var matchId = matchSaveResult["_id"];
+    // console.log(matchId);
+
+
+    const miniMatchData = {
+        "matchId": matchId,
+        "createdAt": new Date(),
+        "running": true
     }
 
 
-exports.newMatchAddedToFirebase = (req, res, next) => {
-    console.log("Got request from firebase");
-    console.log(req.body);
+    participants.forEach(async participant => {
+        // var user = await User.findById(participant);
+        // console.log(user["name"])
+        console.log(participant);
+        var updatedUser = await User.updateOne({ _id: participant }, { $push: { matches: miniMatchData } });
+
+        var tunnelRes = wscs.sendDataToClient(participant, true, matchSaveResult);
+        console.log("Open connections with ", wscs.getOpenConnections());
+        console.log("Tunnel result is ", tunnelRes);
+        // var updatedUser = await User.findByIdAndUpdate(participant, { "bruh": "bitch" });
+        // var updatedUser = await User.findByIdAndUpdate(participant, { $set: { day: 'example' } }, { new: true });
+        //  console.log(participant);
+
+        //  console.log(updatedUser);
+    })
+
+    res.send({
+        message: "Match started"
+    });
+
 }
 
-
-class CategoryQuestionsJoint {
-    constructor(questions, categoryId, categoryTitle) {
-
-        this.questions = questions;
-        this.categoryId = categoryId;
-        this.categoryTitle = categoryTitle;
-    }
-}
 
 

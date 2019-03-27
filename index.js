@@ -90,7 +90,7 @@ function startWebsocketServer(server) {
                 var tempConn = wscs.get(t["id"]);
                 if (tempConn != null) {
                     if (wscs.isOpen(t["id"])) {
-
+                        ws.send("Another open connection already exists");
                     } else {
                         wscs.add(t["id"], ws);
                         fetchUserData(t["id"], ws);

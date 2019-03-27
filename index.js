@@ -85,7 +85,7 @@ function startWebsocketServer(server) {
 
             var t = JSON.parse(message);
             console.log(message);
-            if (t["type"] === "FIRST EVENT") {
+            if (t["type"] === "first_event") {
                 console.log("First event with ", t["id"]);
                 var tempConn = wscs.get(t["id"]);
                 if (tempConn != null) {
@@ -93,9 +93,11 @@ function startWebsocketServer(server) {
 
                     } else {
                         wscs.add(t["id"], ws);
+                        fetchUserData(t["id"], ws);
                     }
                 } else {
                     wscs.add(t["id"], ws);
+                    fetchUserData(t["id"], ws);
                 }
 
             } else {
@@ -117,6 +119,36 @@ function startWebsocketServer(server) {
         console.log("A socket disconnected");
     });
 
+
+    const User = require('./models/user');
+    const fetchUserData = (id, ws) => {
+        console.log("here")
+        // User.find({ $where: { "originPlatformID": id } }).exec().then(user => {
+
+        //     ws.send(user);
+
+        // }).catch(err => {
+        //     const obj = {
+        //         "message": "Failed to fetch user",
+        //         "error": err
+        //     }
+
+        // });
+
+        User.findOne({ "originPlatformID": id }).exec().then(user => {
+            var obj = { "type": "first_event", "user": user };
+            ws.send(JSON.stringify(obj));
+
+        }).catch(err => {
+            const obj = {
+                "message": "Failed to fetch user",
+                "error": err
+            }
+
+        });
+
+
+    }
 }
 
 

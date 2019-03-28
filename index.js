@@ -128,6 +128,7 @@ function startWebsocketServer(server) {
     // });
 
     User.findOne({ originPlatformID: id })
+      .select("-firstLogin -originPlatform -originPlatformID -privilege -name")
       .exec()
       .then(user => {
         var obj = { type: "first_event", user: user };

@@ -183,6 +183,10 @@ const createMatchAsync = async (res, participants, matchType) => {
     //  console.log(round.questions.length);
   }
 
+  var roundsTaken = {
+    by: [],
+    questions: []
+  };
   var match = await new Match({
     type: matchType,
     participants: participants,
@@ -190,7 +194,8 @@ const createMatchAsync = async (res, participants, matchType) => {
     bet: 10,
     currentRound: 0,
     currentTurn: participants[0],
-    rounds: rounds
+    rounds: rounds,
+    roundsTaken: roundsTaken
   });
 
   var matchSaveResult = await match.save();
@@ -234,4 +239,51 @@ const createMatchAsync = async (res, participants, matchType) => {
   res.send({
     message: "Match started"
   });
+};
+
+exports.getMatchdata = async (req, res, next) => {
+  const { id } = req.params;
+  console.log("Match data requested for ", id);
+
+  var match = await Match.findById(id);
+  res.status(200).send(match);
+};
+
+exports.updateMatch = async (req, res, next) => {
+  console.log("updating match...");
+  // console.log(req.body);
+  var vals = JSON.parse(Object.keys(req.body)[0]);
+  // console.log(vals);
+  var matchId = vals.id;
+  var roundsTaken = vals.roundsTaken;
+  var currentRound = vals.currentRound;
+  var currentTurn = vals.currentTurn;
+  console.log("Next turn ", currentTurn, currentRound);
+
+  var query = { _id: matchId };
+  var update = {
+    $set: {
+      roundsTaken: roundsTaken,
+      currentRound: currentRound,
+      currentTurn: currentTurn
+    }
+  };
+  var options = { new: true };
+  var updatedMatchData = await Match.findOneAndUpdate(query, update, options);
+
+  console.log(updatedMatchData.currentTurn, updatedMatchData.currentRound);
+  var participants = vals.participants;
+  var obj = {};
+  obj["currentTurn"] = updatedMatchData.currentTurn;
+  obj["currentRound"] = updatedMatchData.currentRound;
+  obj["roundsTaken"] = updatedMatchData.roundsTaken;
+  for (var i = 0; i < participants.length; i++) {
+    await wscs.sendDataToClient(participants[i], true, {
+      type: "match_update",
+      id: matchId,
+      updatedData: obj
+    });
+  }
+
+  res.send("match updated request accepted");
 };

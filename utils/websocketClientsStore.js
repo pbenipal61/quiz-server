@@ -40,7 +40,7 @@ class WebsocketClientsStore {
           if (typeof data === "string" || data instanceof String) {
             await client.send(data);
           } else {
-            console.log("converting data to string");
+            //  console.log("converting data to string");
 
             await client.send(JSON.stringify(data));
           }

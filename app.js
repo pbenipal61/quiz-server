@@ -3,8 +3,9 @@ const express = require("express");
 const path = require("path");
 const bodyParser = require("body-parser");
 
-const helmet = require("helmet");
+const logger = require("morgan");
 
+const helmet = require("helmet");
 const expressip = require("express-ip");
 
 const graphqlHttp = require("express-graphql");
@@ -17,15 +18,19 @@ const graphqlResolvers = require("./graphql/resolvers");
 
 var serveIndex = require("serve-index");
 
+const passport = require("passport");
 const app = express();
 
 app.set("view engine", "ejs");
 app.set("views", "views");
 
+require("./auth/auth");
+
 const questionRoute = require("./routes/questions");
 const apiRoute = require("./routes/api");
 const usersRoute = require("./routes/users");
 const miscRoute = require("./routes/misc");
+const adminRoute = require("./routes/admin");
 
 mongoose
   .connect(
@@ -39,7 +44,6 @@ mongoose
     console.log("MongoDB failed to connect!", err);
   });
 mongoose.set("useFindAndModify", false);
-app.use(helmet());
 
 app.use((req, res, next) => {
   res.setHeader("Access-Control-Allow-Origin", "*");
@@ -54,6 +58,13 @@ app.use((req, res, next) => {
 
   next();
 });
+
+app.use(helmet());
+
+app.use(logger("dev"));
+app.use(bodyParser.urlencoded({ extended: false }));
+app.use(express.static(path.join(__dirname, "public"), { dotfiles: "allow" }));
+
 app.use(
   "/graphql",
   graphqlHttp({
@@ -63,9 +74,6 @@ app.use(
   })
 );
 
-app.use(bodyParser.urlencoded({ extended: false }));
-app.use(express.static(path.join(__dirname, "public"), { dotfiles: "allow" }));
-
 app.use(
   "/.well-known",
   express.static(".well-known"),
@@ -74,6 +82,7 @@ app.use(
 
 app.use(expressip().getIpInfoMiddleware);
 
+app.use("/admin", passport.authenticate("jwt", { session: false }), adminRoute);
 app.use("/api", apiRoute);
 app.use("/questions", questionRoute);
 app.use("/users", usersRoute);

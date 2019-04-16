@@ -127,11 +127,18 @@ function startWebsocketServer(server) {
 
     // });
 
-    User.findOne({ originPlatformID: id })
+    var updateObj = {
+      $inc: {
+        loginCount: +1
+      },
+      lastLogin: Date.now()
+    };
+    User.findOneAndUpdate({ originPlatformID: id }, updateObj)
       .select("-firstLogin -originPlatform -originPlatformID -privilege -name")
       .exec()
       .then(user => {
         var obj = { type: "first_event", user: user };
+
         ws.send(JSON.stringify(obj));
       })
       .catch(err => {

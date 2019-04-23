@@ -31,6 +31,7 @@ const apiRoute = require("./routes/api");
 const usersRoute = require("./routes/users");
 const miscRoute = require("./routes/misc");
 const adminRoute = require("./routes/admin");
+const testRoute = require("./routes/test");
 
 mongoose
   .connect(
@@ -82,6 +83,7 @@ app.use(
 
 app.use(expressip().getIpInfoMiddleware);
 
+app.use("/test", testRoute);
 app.use("/admin", passport.authenticate("jwt", { session: false }), adminRoute);
 app.use("/api", apiRoute);
 app.use("/questions", questionRoute);

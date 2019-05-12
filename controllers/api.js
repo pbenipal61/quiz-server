@@ -12,8 +12,8 @@ const fetch = require('node-fetch');
 const db = require('../utils/database');
 const mongoose = require('mongoose');
 
-var WebsocketClientsStore = require('../utils/websocketClientsStore');
-var wscs = new WebsocketClientsStore().getInstance();
+var SocketsStore = require('../utils/socketsStore');
+var socketsStore = new SocketsStore().getInstance();
 //.then(data => {
 //     var firebaseDb = admin.database();
 // })
@@ -113,7 +113,7 @@ exports.getMadMindId = (req, res, next) => {
 	});
 
 exports.createMatch = (req, res, next) => {
-	// console.log(req.body);
+	console.log("[api.js createMatch]",req.body);
 	var vals = JSON.parse(Object.keys(req.body)[0]);
 	console.log(vals);
 
@@ -177,10 +177,20 @@ const createMatchAsync = async (res, participants, matchType) => {
 		//  console.log(round.questions.length);
 	}
 
-	var roundsTaken = {
-		by: [],
-		questions: []
+	var roundsTaken = [];
+	
+	var roundTakenObj = {
+		by: '',
+		questions: [],
+		checks: []
 	};
+
+	participants.forEach(participant => {
+
+		let obj = {...roundTakenObj};
+		obj.by = participant;
+		roundsTaken.push(obj);
+	});
 	var match = await new Match({
 		type: matchType,
 		participants: participants,
@@ -213,11 +223,8 @@ const createMatchAsync = async (res, participants, matchType) => {
 		);
 
 		if (updatedUser != null || typeof updatedUser != 'undefined') {
-			var wscs = new WebsocketClientsStore().getInstance();
-			var tunnelRes = await wscs.sendDataToClient(participant, true, {
-				type: 'new_match_created',
-				matchData: matchSaveResult
-			});
+			
+			var tunnelRes = await socketsStore.sendDataToSocket(participant,'new_match_started',matchSaveResult);
 			//console.log("Open connections with ", wscs.getOpenConnections());
 			console.log('Tunnel result is ', tunnelRes);
 		} else {
@@ -272,13 +279,13 @@ exports.updateMatch = async (req, res, next) => {
 	obj['currentTurn'] = updatedMatchData.currentTurn;
 	obj['currentRound'] = updatedMatchData.currentRound;
 	obj['roundsTaken'] = updatedMatchData.roundsTaken;
+	obj['matchId'] = matchId;
 	for (var i = 0; i < participants.length; i++) {
-		await wscs.sendDataToClient(participants[i], true, {
-			type: 'match_update',
+		await socketsStore.sendDataToSocket(participants[i],'match_update',{
 			id: matchId,
 			updatedData: obj
-		});
+		}, true );
 	}
 
-	res.send('match updated request accepted');
+	res.send({message:'match updated request accepted'});
 };

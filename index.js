@@ -1,6 +1,9 @@
 const http = require("http");
 const https = require("https");
 const fs = require("fs");
+
+const socket = require('socket.io');
+
 const app = require("./app");
 
 const dotenv = require("dotenv");
@@ -63,89 +66,63 @@ if (process.env.NODE_ENV != "development") {
 } else {
   startWebsocketServer(http_server);
 }
-
+const SocketStore = require('./utils/socketsStore');
+socketStore = new SocketStore().getInstance();
 function startWebsocketServer(server) {
-  var WebsocketClientsStore = require("./utils/websocketClientsStore");
-  var wscs = new WebsocketClientsStore().getInstance();
-  console.log(
-    "clients length before websockets connected is ",
-    Object.keys(wscs._data).length
-  );
 
-  const WebSocket = require("ws");
-  const wss = new WebSocket.Server({ server: server });
+  var io = socket(server);
+  io.on('connection', (socket) => {
 
-  wss.on("connection", function connection(ws) {
-    ws.on("message", function incoming(message) {
-      var t = JSON.parse(message);
-      console.log(message);
-      if (t["type"] === "first_event") {
-        console.log("First event with ", t["id"]);
-        var tempConn = wscs.get(t["id"]);
-        if (tempConn != null) {
-          if (wscs.isOpen(t["id"])) {
-            ws.send("Another open connection already exists");
-          } else {
-            console.log("opening tunnel for", t["id"]);
-            wscs.add(t["id"], ws);
-            fetchUserData(t["id"], ws);
-          }
-        } else {
-          console.log("opening tunnel for", t["id"]);
-          wscs.add(t["id"], ws);
-          fetchUserData(t["id"], ws);
-        }
-      } else {
-        console.log(wscs.sendDataToClient(t["sendTo"], true, t["message"]));
-      }
+    console.log("Made socket connection");
+
+    socket.on('login', async (data) => {
+      console.log(data);
+      socketStore.add(data.id, socket);
+      var userData = await fetchUserData(data.id);
+      socket.emit('login', userData);
     });
-    ws.on("close", function closing(evt) {
-      console.log(evt);
-      console.log("A socket closed");
-    });
-    // ws.send('Welcome to MadMind');
+
   });
 
-  wss.once("disconnect", function(client) {
-    // socket is disconnected
-    console.log(client);
-    console.log("A socket disconnected");
-  });
+
 
   const User = require("./models/user");
-  const fetchUserData = (id, ws) => {
-    console.log("here");
-    // User.find({ $where: { "originPlatformID": id } }).exec().then(user => {
+  const fetchUserData = (id) => {
 
-    //     ws.send(user);
+    return new Promise((resolve, reject) => {
 
-    // }).catch(err => {
-    //     const obj = {
-    //         "message": "Failed to fetch user",
-    //         "error": err
-    //     }
 
-    // });
+      var updateObj = {
+        $inc: {
+          loginCount: +1
+        },
+        lastLogin: Date.now()
+      };
+      User.findOneAndUpdate({
+          originPlatformID: id
+        }, updateObj)
+        .select("-firstLogin -originPlatform -originPlatformID -privilege -name")
+        .exec()
+        .then(user => {
 
-    var updateObj = {
-      $inc: {
-        loginCount: +1
-      },
-      lastLogin: Date.now()
-    };
-    User.findOneAndUpdate({ originPlatformID: id }, updateObj)
-      .select("-firstLogin -originPlatform -originPlatformID -privilege -name")
-      .exec()
-      .then(user => {
-        var obj = { type: "first_event", user: user };
+          resolve(user);
+          // var obj = {
+          //   type: "first_event",
+          //   user: user
+          // };
 
-        ws.send(JSON.stringify(obj));
-      })
-      .catch(err => {
-        const obj = {
-          message: "Failed to fetch user",
-          error: err
-        };
-      });
+          // ws.send(JSON.stringify(obj));
+        })
+        .catch(err => {
+
+          reject(err);
+          // const obj = {
+          //   message: "Failed to fetch user",
+          //   error: err
+          // };
+        });
+
+    });
+
   };
 }

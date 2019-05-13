@@ -6,15 +6,9 @@ const app = require('./app');
 const dotenv = require('dotenv');
 dotenv.config();
 
-const port = process.env.HTTP_PORT || 80;
-const httpsPort = process.env.HTTPS_PORT || 443;
-
-const httpServer = http.createServer(app);
+const port = process.env.PORT;
 
 
-httpServer.listen(port, () => {
-  console.log('HTTP server up');
-});
 
 if (process.env.NODE_ENV != 'development') {
   const privateKey = fs.readFileSync(
@@ -37,13 +31,18 @@ if (process.env.NODE_ENV != 'development') {
   };
 
   const httpsServer = https.createServer(credentials, app);
-  httpsServer.listen(httpsPort, () => {
+  httpsServer.listen(port, () => {
     console.log(`HTTPS server up`);
   });
 
   startWebsocketServer(httpsServer);
 } else {
+  const httpServer = http.createServer(app);
+  httpServer.listen(port, () => {
+    console.log('HTTP server up');
+  });
   startWebsocketServer(httpServer);
+  
 }
 const SocketStore = require('./utils/socketsStore');
 socketStore = new SocketStore().getInstance();

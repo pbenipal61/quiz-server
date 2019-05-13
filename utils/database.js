@@ -1,30 +1,22 @@
 const Sequelize = require('sequelize');
-const dotenv = require('dotenv');
-dotenv.config();
-if (process.env.NODE_ENV != 'development') {
+require('dotenv').config();
 
+const sequelize = new Sequelize(
+    process.env.SQL_DB_NAME,
+    process.env.SQL_USER,
+    process.env.SQL_PASSWORD,
+    {
+      host: process.env.SQL_HOST,
+      port: process.env.SQL_PORT,
+      dialect: 'mysql',
 
-    const sequelize = new Sequelize('Quiz', 'root', 'Theprodigyclub1',
-        {
-            dialect: 'mysql', host: 'localhost',
-            logging: false
-        });
+      pool: {
+        max: 5,
+        min: 0,
+        acquire: 30000,
+        idle: 10000,
+      },
+    }
+);
 
-
-    module.exports = sequelize;
-    module.exports.random = sequelize.random();
-}
-else {
-
-
-    const sequelize = new Sequelize('Quiz', 'root', 'root',
-        {
-            dialect: 'mysql', host: 'localhost', port: 8889,
-            logging: false
-        });
-
-
-    module.exports = sequelize;
-    module.exports.random = sequelize.random();
-}
-
+module.exports = sequelize;

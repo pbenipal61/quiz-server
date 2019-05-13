@@ -9,41 +9,13 @@ dotenv.config();
 const port = process.env.PORT;
 
 
-
-if (process.env.NODE_ENV != 'development') {
-  const privateKey = fs.readFileSync(
-      '/etc/letsencrypt/live/postmaninteractive.com/privkey.pem',
-      'utf8'
-  );
-  const certificate = fs.readFileSync(
-      '/etc/letsencrypt/live/postmaninteractive.com/cert.pem',
-      'utf8'
-  );
-  const ca = fs.readFileSync(
-      '/etc/letsencrypt/live/postmaninteractive.com/chain.pem',
-      'utf8'
-  );
-
-  const credentials = {
-    key: privateKey,
-    cert: certificate,
-    ca: ca,
-  };
-
-  const httpsServer = https.createServer(credentials, app);
-  httpsServer.listen(port, () => {
-    console.log(`HTTPS server up`);
-  });
-
-  startWebsocketServer(httpsServer);
-} else {
   const httpServer = http.createServer(app);
   httpServer.listen(port, () => {
     console.log('HTTP server up');
   });
   startWebsocketServer(httpServer);
-  
-}
+
+
 const SocketStore = require('./utils/socketsStore');
 socketStore = new SocketStore().getInstance();
 function startWebsocketServer(server) {

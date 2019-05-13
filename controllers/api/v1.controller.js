@@ -12,6 +12,7 @@ const util = require('util');
 const redisUrl = 'redis://127.0.0.1:6379';
 const client = redis.createClient(redisUrl);
 client.hget = util.promisify(client.hget);
+client.hgetall = util.promisify(client.hgetall);
 
 //Match models
 const Match = require('../../models/mongoose/matches/match');

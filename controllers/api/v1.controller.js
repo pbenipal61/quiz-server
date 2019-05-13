@@ -67,7 +67,7 @@ getQuestions = async (req, res, next) => {
 	catch(e){
 		res.status(400).json({
 			'message': 'Failed',
-			'error': 'err'
+			'error': e
 		});
 	}
 		

@@ -7,6 +7,11 @@ const MMatchType = require('../../models/mongoose/matchType');
 const MatchType = require('../../models/sequelize/matchType');
 const MOriginPlatform = require('../../models/mongoose/originPlatform');
 const OriginPlatform = require('../../models/sequelize/originPlatform');
+const redis = require('redis');
+const util = require('util');
+const redisUrl = 'redis://127.0.0.1:6379';
+const client = redis.createClient(redisUrl);
+client.hget = util.promisify(client.hget);
 
 //Match models
 const Match = require('../../models/mongoose/matches/match');
@@ -45,23 +50,25 @@ getCategories = (req, res, next) => {
 		}
 	});
 };
-getQuestions = (req, res, next) => {
-		const numberOfQuestions = req.params.numberOfQuestions;
-		const returnObj = {};
-		const categoriesUsed = 0;
-		const filter = { usePermission: 1 };
+getQuestions = async (req, res, next) => {
+	try{
+		if(req.params.id == null){
+			const questions = await client.hgetall('questions');
+			res.status(200).send(questions);
+		}else{
 
-		MQuestion.aggregate([ { $match: filter }, { $sample: { size: Number(numberOfQuestions) } } ], (err, result) => {
-			if (err) {
-				res.status(400).send({
-					message: 'Error in getting questions'
-				});
-			} else {
-				res.status(200).send({
-					result
-				});
-			}
+			const question = await client.hget('questions', String(req.params.id));
+			res.status(200).send(JSON.parse(question));
+		}
+
+	}
+	catch(e){
+		res.status(400).json({
+			'message': 'Failed',
+			'error': 'err'
 		});
+	}
+		
 };
 
 createMatch = async (req, res, next) =>{
@@ -313,6 +320,8 @@ catch(err){
 	})
 }
 }
+
+
 
 
 

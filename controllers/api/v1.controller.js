@@ -55,7 +55,8 @@ getQuestions = async (req, res, next) => {
 	try{
 		if(req.params.id == null){
 			const questions = await client.hgetall('questions');
-			res.status(200).send(questions);
+			const parsedQuestions = questions.map(e=>JSON.parse(e));
+			res.status(200).send(parsedQuestions);
 		}else{
 
 			const question = await client.hget('questions', String(req.params.id));

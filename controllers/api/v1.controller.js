@@ -54,8 +54,10 @@ getCategories = (req, res, next) => {
 getQuestions = async (req, res, next) => {
 	try{
 		if(req.params.id == null){
-			const questions = await client.hgetall('questions');
-			res.status(200).send(questions);
+			const questionsObject = await client.hgetall('questions');
+			const values = Object.values(questionsObject);
+			const parsedValues = values.map(e=>JSON.parse(e));
+			res.status(200).send(parsedValues);
 		}else{
 
 			const question = await client.hget('questions', String(req.params.id));
